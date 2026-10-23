@@ -1,0 +1,13053 @@
+
+<!DOCTYPE html>
+<html>
+
+<head>
+
+  <base target="_top">
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0">
+
+  <title>ALS Transportes | Sistema de Corridas</title>
+
+
+  <style>
+
+    * {
+      box-sizing: border-box;
+    }
+
+
+    /* ========================================================
+       EFEITOS GERAIS
+       ======================================================== */
+
+    button {
+
+      transition:
+        transform 0.18s ease,
+        box-shadow 0.18s ease,
+        filter 0.18s ease,
+        background 0.18s ease;
+
+    }
+
+
+    button:hover:not(:disabled) {
+
+      transform:
+        translateY(-2px);
+
+      box-shadow:
+        0 6px 14px rgba(15,37,69,0.18);
+
+    }
+
+
+    button:active:not(:disabled) {
+
+      transform:
+        translateY(1px)
+        scale(0.98);
+
+      box-shadow:
+        0 2px 6px rgba(15,37,69,0.18);
+
+    }
+
+
+    body {
+
+      margin: 0;
+
+      font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+      background: #0f2545;
+
+      color: #0f2545;
+
+    }
+
+
+    /* ========================================================
+       MENU
+       ======================================================== */
+
+    .menu-button {
+
+      position: fixed;
+
+      top: 18px;
+      left: 18px;
+
+      z-index: 1100;
+
+      width: 45px;
+      height: 45px;
+
+      border: none;
+
+      border-radius: 8px;
+
+      background: #1d4ed8;
+
+      color: white;
+
+      font-size: 24px;
+
+      cursor: pointer;
+
+      box-shadow:
+        0 4px 12px rgba(0,0,0,0.25);
+
+    }
+
+
+    .sidebar {
+
+      position: fixed;
+
+      top: 0;
+      left: -295px;
+
+      width: 295px;
+      height: 100vh;
+
+      background: #0f2545;
+
+      z-index: 1099;
+
+      transition: 0.3s;
+
+      box-shadow:
+        4px 0 15px rgba(0,0,0,0.25);
+
+      padding-top: 28px;
+
+      overflow-y: auto;
+
+    }
+
+
+    .sidebar.aberta {
+      left: 0;
+    }
+
+
+    .sidebar-marca {
+
+      padding:
+        10px 25px 24px;
+
+      border-bottom:
+        1px solid #24456f;
+
+    }
+
+
+    .sidebar-marca .empresa {
+
+      color: white;
+
+      font-size: 17px;
+
+      font-weight: 800;
+
+      letter-spacing: 0.8px;
+
+    }
+
+
+    .sidebar-marca .sub {
+
+      color: #8ea5c8;
+
+      font-size: 11px;
+
+      margin-top: 5px;
+
+      letter-spacing: 1px;
+
+      text-transform: uppercase;
+
+    }
+
+
+    .menu-secao {
+
+      color: #6f88ad;
+
+      font-size: 10px;
+
+      font-weight: bold;
+
+      letter-spacing: 1px;
+
+      text-transform: uppercase;
+
+      padding:
+        22px 25px 8px;
+
+    }
+
+
+    .menu-item {
+
+      margin:
+        3px 10px;
+
+      padding:
+        13px 15px;
+
+      color: #c0cbdf;
+
+      cursor: pointer;
+
+      font-size: 14px;
+
+      border-radius: 8px;
+
+      transition: 0.2s;
+
+    }
+
+
+    .menu-item:hover {
+
+      background: #1c3a63;
+
+      color: white;
+
+    }
+
+
+    .menu-item.ativo {
+
+      background: #1d4ed8;
+
+      color: white;
+
+      box-shadow:
+        0 5px 12px rgba(29,78,216,0.25);
+
+    }
+
+
+    /* ========================================================
+       CONTAINER
+       ======================================================== */
+
+    .container {
+
+      width: 100%;
+
+      max-width: 1280px;
+
+      margin: 34px auto;
+
+      padding: 30px;
+
+      background: #ffffff;
+
+      border-radius: 14px;
+
+      box-shadow:
+        0 9px 25px rgba(0,0,0,0.22);
+
+      position: relative;
+
+    }
+
+
+    .container-form {
+
+      max-width: 850px;
+
+    }
+
+
+    /* ========================================================
+       CABEÇALHOS
+       ======================================================== */
+
+    .titulo {
+
+      text-align: center;
+
+      font-size: 32px;
+
+      font-weight: 700;
+
+      margin-bottom: 8px;
+
+      color: #0f2545;
+
+    }
+
+
+    .subtitulo {
+
+      text-align: center;
+
+      color: #666;
+
+      margin-bottom: 30px;
+
+    }
+
+
+    .cabecalho-pagina {
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: space-between;
+
+      gap: 20px;
+
+      margin-bottom: 24px;
+
+    }
+
+
+    .cabecalho-pagina h2 {
+
+      margin: 0;
+
+      color: #0f2545;
+
+      font-size: 24px;
+
+    }
+
+
+    .cabecalho-pagina p {
+
+      margin:
+        5px 0 0;
+
+      color: #64748b;
+
+      font-size: 13px;
+
+    }
+
+
+    .data-hora-atual {
+
+      position: absolute;
+
+      top: 24px;
+
+      right: 30px;
+
+      text-align: right;
+
+      color: #64748b;
+
+      line-height: 1.35;
+
+    }
+
+
+    .data-hora-atual .data {
+
+      display: block;
+
+      font-size: 14px;
+
+      font-weight: bold;
+
+      color: #0f2545;
+
+    }
+
+
+    .data-hora-atual .hora {
+
+      display: block;
+
+      font-size: 12px;
+
+      color: #64748b;
+
+      margin-top: 2px;
+
+    }
+
+
+    /* ========================================================
+       BOTÕES
+       ======================================================== */
+
+    .botao {
+
+      border: none;
+
+      border-radius: 7px;
+
+      padding:
+        11px 16px;
+
+      font-weight: bold;
+
+      cursor: pointer;
+
+    }
+
+
+    .botao-azul {
+      background: #1d4ed8;
+      color: white;
+    }
+
+
+    .botao-navy {
+      background: #0f2545;
+      color: white;
+    }
+
+
+    .botao-cinza {
+      background: #475569;
+      color: white;
+    }
+
+
+    .botao-verde {
+      background: #16a34a;
+      color: white;
+    }
+
+
+    .botao-vermelho {
+      background: #dc2626;
+      color: white;
+    }
+
+
+    .botao-claro {
+
+      background: #eef2f7;
+
+      color: #334155;
+
+    }
+
+
+    /* ========================================================
+       CAMPOS
+       ======================================================== */
+
+    .campo {
+      margin-bottom: 20px;
+    }
+
+
+    .campo label {
+
+      display: block;
+
+      font-weight: bold;
+
+      margin-bottom: 8px;
+
+      color: #0f2545;
+
+    }
+
+
+    input,
+    select,
+    textarea {
+
+      width: 100%;
+
+      padding:
+        13px 14px;
+
+      border:
+        1px solid #cbd5e1;
+
+      border-radius: 7px;
+
+      font-size: 15px;
+
+      outline: none;
+
+      background: white;
+
+      color: #1e293b;
+
+    }
+
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+
+      border-color: #1d4ed8;
+
+      box-shadow:
+        0 0 0 2px
+        rgba(29,78,216,0.12);
+
+    }
+
+
+    textarea {
+
+      min-height: 90px;
+
+      resize: vertical;
+
+    }
+
+
+    /* ========================================================
+       LOCAIS
+       ======================================================== */
+
+    .local-linha {
+
+      display: flex;
+
+      gap: 8px;
+
+      margin-bottom: 10px;
+
+      position: relative;
+
+    }
+
+
+    .local-linha input {
+      flex: 1;
+    }
+
+
+    .botao-remover {
+
+      width: 45px;
+
+      border: none;
+
+      border-radius: 7px;
+
+      background: #dc2626;
+
+      color: white;
+
+      cursor: pointer;
+
+      font-size: 18px;
+
+      flex-shrink: 0;
+
+    }
+
+
+    .botao-adicionar {
+
+      border:
+        1px solid #1d4ed8;
+
+      background: white;
+
+      color: #1d4ed8;
+
+      padding:
+        10px 15px;
+
+      border-radius: 7px;
+
+      cursor: pointer;
+
+      font-weight: bold;
+
+    }
+
+
+    .sugestoes-locais {
+
+      position: absolute;
+
+      left: 0;
+
+      right: 53px;
+
+      top: calc(100% - 2px);
+
+      z-index: 500;
+
+      background: white;
+
+      border:
+        1px solid #cbd5e1;
+
+      border-radius: 8px;
+
+      box-shadow:
+        0 10px 25px rgba(15,37,69,0.14);
+
+      overflow: hidden;
+
+      display: none;
+
+    }
+
+
+    .sugestoes-locais.aberta {
+      display: block;
+    }
+
+
+    .sugestao-local {
+
+      display: flex;
+
+      align-items: center;
+
+      gap: 8px;
+
+      padding:
+        11px 13px;
+
+      cursor: pointer;
+
+      font-size: 13px;
+
+      color: #334155;
+
+      border-bottom:
+        1px solid #eef2f7;
+
+    }
+
+
+    .sugestao-local:last-child {
+      border-bottom: none;
+    }
+
+
+    .sugestao-local:hover {
+
+      background: #eef4fb;
+
+      color: #0f2545;
+
+    }
+
+
+    /* ========================================================
+       CORRIDAS FREQUENTES
+       ======================================================== */
+
+    .frequentes-box {
+
+      margin:
+        0 0 22px;
+
+      padding:
+        16px;
+
+      border:
+        1px solid #dbe3ee;
+
+      background: #f8fafc;
+
+      border-radius: 10px;
+
+    }
+
+
+    .frequentes-titulo {
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: space-between;
+
+      gap: 10px;
+
+      margin-bottom: 12px;
+
+    }
+
+
+    .frequentes-titulo strong {
+
+      color: #0f2545;
+
+      font-size: 14px;
+
+    }
+
+
+    .frequentes-titulo span {
+
+      color: #64748b;
+
+      font-size: 11px;
+
+    }
+
+
+    .frequentes-grid {
+
+      display: flex;
+
+      flex-wrap: wrap;
+
+      gap: 8px;
+
+    }
+
+
+    .botao-frequente {
+
+      border:
+        1px solid #cbd5e1;
+
+      background: white;
+
+      color: #0f2545;
+
+      padding:
+        9px 12px;
+
+      border-radius: 7px;
+
+      cursor: pointer;
+
+      font-size: 12px;
+
+      font-weight: bold;
+
+    }
+
+
+    .botao-frequente:hover {
+
+      border-color: #1d4ed8;
+
+      color: #1d4ed8;
+
+    }
+
+
+    /* ========================================================
+       MANUAL / RETORNO / VALOR
+       ======================================================== */
+
+    .manual-box {
+
+      margin-bottom: 20px;
+
+      padding: 15px;
+
+      border:
+        1px solid #dbe3ee;
+
+      border-radius: 8px;
+
+      background: #f8fafc;
+
+    }
+
+
+    .manual-toggle {
+
+      display: flex;
+
+      align-items: center;
+
+      gap: 10px;
+
+      font-weight: bold;
+
+      cursor: pointer;
+
+    }
+
+
+    .manual-toggle input {
+      width: auto;
+    }
+
+
+    .retorno-box {
+
+      display: flex;
+
+      align-items: center;
+
+      gap: 10px;
+
+      padding: 13px;
+
+      border:
+        1px solid #dbe3ee;
+
+      border-radius: 7px;
+
+      background: #f8fafc;
+
+    }
+
+
+    .retorno-box input {
+      width: auto;
+    }
+
+
+    .valor-box {
+
+      margin-top: 25px;
+
+      padding: 20px;
+
+      border-radius: 10px;
+
+      background: #f1f5f9;
+
+      text-align: center;
+
+    }
+
+
+    .valor-label {
+
+      font-size: 14px;
+
+      color: #64748b;
+
+      margin-bottom: 5px;
+
+    }
+
+
+    .valor {
+
+      font-size: 32px;
+
+      font-weight: bold;
+
+      color: #1d4ed8;
+
+    }
+
+
+    /* ========================================================
+       BOTÃO PRINCIPAL
+       ======================================================== */
+
+    .botao-principal {
+
+      width: 100%;
+
+      margin-top: 25px;
+
+      padding: 15px;
+
+      border: none;
+
+      border-radius: 8px;
+
+      background: #1d4ed8;
+
+      color: white;
+
+      font-size: 17px;
+
+      font-weight: bold;
+
+      cursor: pointer;
+
+    }
+
+
+    .botao-principal:hover:not(:disabled) {
+      background: #1e40af;
+    }
+
+
+    .botao-principal:disabled {
+
+      background: #94a3b8;
+
+      cursor: not-allowed;
+
+    }
+
+
+    .botao-principal.carregando {
+
+      animation:
+        pulsarRegistro
+        1s ease-in-out infinite;
+
+    }
+
+
+    @keyframes pulsarRegistro {
+
+      0%,
+      100% {
+
+        transform:
+          scale(1);
+
+        opacity: 1;
+
+      }
+
+      50% {
+
+        transform:
+          scale(0.985);
+
+        opacity: 0.82;
+
+      }
+
+    }
+
+
+    /* ========================================================
+       MENSAGEM
+       ======================================================== */
+
+    .mensagem {
+
+      margin-top: 20px;
+
+      padding: 15px;
+
+      border-radius: 8px;
+
+      text-align: center;
+
+      font-weight: bold;
+
+      display: none;
+
+      opacity: 1;
+
+      transform:
+        translateY(0);
+
+      transition:
+        opacity 0.5s ease,
+        transform 0.5s ease;
+
+    }
+
+
+    .mensagem.sucesso {
+
+      display: block;
+
+      background: #dcfce7;
+
+      color: #166534;
+
+    }
+
+
+    .mensagem.erro {
+
+      display: block;
+
+      background: #fee2e2;
+
+      color: #991b1b;
+
+    }
+
+
+    .mensagem.sumindo {
+
+      opacity: 0;
+
+      transform:
+        translateY(-6px);
+
+    }
+
+
+    .acao-pos-registro {
+
+      margin-top: 12px;
+
+      display: flex;
+
+      justify-content: center;
+
+      flex-wrap: wrap;
+
+      gap: 10px;
+
+    }
+
+
+    .acao-pos-registro .botao-comprovante {
+      min-width: 280px;
+    }
+
+
+    /* ========================================================
+       DASHBOARD
+       ======================================================== */
+
+    .dashboard-topo {
+
+      display: flex;
+
+      justify-content: space-between;
+
+      align-items: flex-start;
+
+      gap: 20px;
+
+      margin-bottom: 24px;
+
+    }
+
+
+    .dashboard-saude {
+
+      display: flex;
+
+      align-items: center;
+
+      gap: 8px;
+
+      padding:
+        9px 12px;
+
+      border-radius: 8px;
+
+      background: #f8fafc;
+
+      border:
+        1px solid #dbe3ee;
+
+      color: #475569;
+
+      font-size: 12px;
+
+    }
+
+
+    .dashboard-saude .bolinha {
+
+      width: 9px;
+      height: 9px;
+
+      border-radius: 50%;
+
+      background: #16a34a;
+
+    }
+
+
+    .cards-dashboard {
+
+      display: grid;
+
+      grid-template-columns:
+        repeat(4, 1fr);
+
+      gap: 15px;
+
+      margin-bottom: 20px;
+
+    }
+
+
+    .card-dashboard {
+
+      background: white;
+
+      border:
+        1px solid #dbe3ee;
+
+      border-radius: 12px;
+
+      padding: 18px;
+
+      position: relative;
+
+      overflow: hidden;
+
+    }
+
+
+    .card-dashboard::before {
+
+      content: '';
+
+      position: absolute;
+
+      top: 0;
+      left: 0;
+
+      width: 100%;
+      height: 4px;
+
+      background: #1d4ed8;
+
+    }
+
+
+    .card-dashboard .icone {
+
+      width: 38px;
+      height: 38px;
+
+      border-radius: 9px;
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: center;
+
+      background: #eef4fb;
+
+      margin-bottom: 14px;
+
+      font-size: 18px;
+
+    }
+
+
+    .card-dashboard .label {
+
+      font-size: 12px;
+
+      color: #64748b;
+
+      margin-bottom: 6px;
+
+    }
+
+
+    .card-dashboard .numero {
+
+      font-size: 27px;
+
+      font-weight: 800;
+
+      color: #0f2545;
+
+    }
+
+
+    .card-dashboard .meta {
+
+      margin-top: 6px;
+
+      font-size: 11px;
+
+      color: #94a3b8;
+
+    }
+
+
+    .dashboard-grid {
+
+      display: grid;
+
+      grid-template-columns:
+        1.4fr 1fr;
+
+      gap: 18px;
+
+    }
+
+
+    .painel {
+
+      background: white;
+
+      border:
+        1px solid #dbe3ee;
+
+      border-radius: 12px;
+
+      padding: 18px;
+
+    }
+
+
+    .painel-titulo {
+
+      display: flex;
+
+      justify-content:
+        space-between;
+
+      align-items: center;
+
+      gap: 10px;
+
+      margin-bottom: 17px;
+
+    }
+
+
+    .painel-titulo strong {
+
+      font-size: 15px;
+
+      color: #0f2545;
+
+    }
+
+
+    .painel-titulo span {
+
+      font-size: 11px;
+
+      color: #64748b;
+
+    }
+
+
+    /* ========================================================
+       GRÁFICO DE BARRAS
+       ======================================================== */
+
+    .grafico-barras {
+
+      display: flex;
+
+      align-items: flex-end;
+
+      gap: 8px;
+
+      height: 220px;
+
+      padding-top: 15px;
+
+      border-bottom:
+        1px solid #dbe3ee;
+
+    }
+
+
+    .barra-coluna {
+
+      flex: 1;
+
+      min-width: 0;
+
+      height: 100%;
+
+      display: flex;
+
+      flex-direction: column;
+
+      align-items: center;
+
+      justify-content: flex-end;
+
+    }
+
+
+    .barra-valor {
+
+      font-size: 9px;
+
+      color: #64748b;
+
+      margin-bottom: 4px;
+
+      white-space: nowrap;
+
+    }
+
+
+    .barra {
+
+      width: 72%;
+
+      max-width: 42px;
+
+      min-height: 4px;
+
+      border-radius:
+        7px 7px 0 0;
+
+      background:
+        linear-gradient(
+          to top,
+          #1d4ed8,
+          #509eda
+        );
+
+    }
+
+
+    .barra-label {
+
+      margin-top: 7px;
+
+      font-size: 9px;
+
+      color: #64748b;
+
+      white-space: nowrap;
+
+    }
+
+
+    /* ========================================================
+       BARRAS HORIZONTAIS
+       ======================================================== */
+
+    .grafico-horizontal {
+
+      display: flex;
+
+      flex-direction: column;
+
+      gap: 14px;
+
+    }
+
+
+    .linha-grafico {
+
+      display: grid;
+
+      grid-template-columns:
+        120px 1fr 70px;
+
+      gap: 10px;
+
+      align-items: center;
+
+    }
+
+
+    .linha-grafico .nome {
+
+      font-size: 11px;
+
+      color: #334155;
+
+      white-space: nowrap;
+
+      overflow: hidden;
+
+      text-overflow: ellipsis;
+
+    }
+
+
+    .linha-grafico .trilho {
+
+      height: 9px;
+
+      border-radius: 999px;
+
+      background: #edf2f7;
+
+      overflow: hidden;
+
+    }
+
+
+    .linha-grafico .preenchimento {
+
+      height: 100%;
+
+      border-radius: 999px;
+
+      background: #1d4ed8;
+
+    }
+
+
+    .linha-grafico .valor {
+
+      text-align: right;
+
+      font-size: 11px;
+
+      font-weight: bold;
+
+      color: #0f2545;
+
+    }
+
+
+    /* ========================================================
+       LISTAGEM RECENTE
+       ======================================================== */
+
+    .lista-recente {
+
+      display: flex;
+
+      flex-direction: column;
+
+      gap: 9px;
+
+    }
+
+
+    .item-recente {
+
+      display: grid;
+
+      grid-template-columns:
+        85px 1fr auto;
+
+      gap: 10px;
+
+      align-items: center;
+
+      padding:
+        10px 11px;
+
+      border:
+        1px solid #edf1f5;
+
+      border-radius: 8px;
+
+    }
+
+
+    .item-recente .numero {
+
+      font-size: 10px;
+
+      font-weight: bold;
+
+      color: #1d4ed8;
+
+    }
+
+
+    .item-recente .descricao {
+
+      min-width: 0;
+
+    }
+
+
+    .item-recente .descricao strong {
+
+      display: block;
+
+      font-size: 11px;
+
+      color: #0f2545;
+
+      white-space: nowrap;
+
+      overflow: hidden;
+
+      text-overflow: ellipsis;
+
+    }
+
+
+    .item-recente .descricao span {
+
+      display: block;
+
+      font-size: 10px;
+
+      color: #64748b;
+
+      margin-top: 2px;
+
+    }
+
+
+    /* ========================================================
+       STATUS
+       ======================================================== */
+
+    .status-badge {
+
+      display: inline-flex;
+
+      align-items: center;
+
+      justify-content: center;
+
+      gap: 5px;
+
+      border-radius: 999px;
+
+      padding:
+        5px 9px;
+
+      font-size: 10px;
+
+      font-weight: bold;
+
+      white-space: nowrap;
+
+    }
+
+
+    .status-solicitada {
+
+      background: #fef3c7;
+
+      color: #92400e;
+
+    }
+
+
+    .status-concluida {
+
+      background: #dcfce7;
+
+      color: #166534;
+
+    }
+
+
+    .status-cancelada {
+
+      background: #fee2e2;
+
+      color: #991b1b;
+
+    }
+
+
+    /* ========================================================
+       RELATÓRIO
+       ======================================================== */
+
+    .cabecalho-relatorio {
+
+      display: flex;
+
+      justify-content:
+        space-between;
+
+      align-items: center;
+
+      gap: 20px;
+
+      margin-bottom: 20px;
+
+    }
+
+
+    .titulo-relatorio {
+
+      margin: 0;
+
+      color: #0f2545;
+
+      font-size: 24px;
+
+    }
+
+
+    .botoes-relatorio {
+
+      display: flex;
+
+      align-items: center;
+
+      gap: 8px;
+
+      flex-wrap: wrap;
+
+    }
+
+
+    .painel-filtros {
+
+      display: none;
+
+      margin-bottom: 20px;
+
+      padding: 18px;
+
+      border:
+        1px solid #dbe3ee;
+
+      border-radius: 10px;
+
+      background: #f8fafc;
+
+    }
+
+
+    .painel-filtros.aberto {
+      display: block;
+    }
+
+
+    .filtros-grid {
+
+      display: grid;
+
+      grid-template-columns:
+        repeat(5, 1fr);
+
+      gap: 12px;
+
+    }
+
+
+    .filtro-campo label {
+
+      display: block;
+
+      font-size: 11px;
+
+      font-weight: bold;
+
+      margin-bottom: 6px;
+
+      color: #0f2545;
+
+    }
+
+
+    .botoes-filtro {
+
+      display: flex;
+
+      justify-content: flex-end;
+
+      gap: 8px;
+
+      margin-top: 14px;
+
+    }
+
+
+    .resultado-filtro {
+
+      margin-bottom: 14px;
+
+      color: #64748b;
+
+      font-size: 13px;
+
+    }
+
+
+    .tabela-wrapper {
+      overflow-x: auto;
+    }
+
+
+    table {
+
+      width: 100%;
+
+      border-collapse: collapse;
+
+      min-width: 1180px;
+
+    }
+
+
+    th {
+
+      background: #0f2545;
+
+      color: white;
+
+      padding: 12px;
+
+      text-align: left;
+
+      font-size: 12px;
+
+    }
+
+
+    td {
+
+      padding: 10px 11px;
+
+      border-bottom:
+        1px solid #e2e8f0;
+
+      font-size: 12px;
+
+      color: #334155;
+
+      vertical-align: middle;
+
+    }
+
+
+    tr:hover td {
+      background: #f8fafc;
+    }
+
+
+    .acoes-tabela {
+
+      display: flex;
+
+      gap: 6px;
+
+      flex-wrap: wrap;
+
+    }
+
+
+    .botao-tabela {
+
+      border: none;
+
+      padding:
+        7px 10px;
+
+      border-radius: 6px;
+
+      cursor: pointer;
+
+      font-weight: bold;
+
+      font-size: 11px;
+
+    }
+
+
+    .botao-ver {
+
+      background: #24456f;
+
+      color: white;
+
+    }
+
+
+    .botao-emitir {
+
+      background: #1d4ed8;
+
+      color: white;
+
+    }
+
+
+    /* ========================================================
+       DETALHES DA CORRIDA
+       ======================================================== */
+
+    .detalhes-cabecalho {
+
+      display: flex;
+
+      justify-content:
+        space-between;
+
+      align-items: center;
+
+      gap: 15px;
+
+      margin-bottom: 22px;
+
+    }
+
+
+    .detalhes-numero {
+
+      font-size: 13px;
+
+      color: #64748b;
+
+    }
+
+
+    .detalhes-numero strong {
+
+      color: #0f2545;
+
+      font-size: 20px;
+
+    }
+
+
+    .detalhes-acoes {
+
+      display: flex;
+
+      gap: 8px;
+
+      flex-wrap: wrap;
+
+    }
+
+
+    .detalhes-grid {
+
+      display: grid;
+
+      grid-template-columns:
+        repeat(4, 1fr);
+
+      gap: 14px;
+
+      margin-bottom: 18px;
+
+    }
+
+
+    .detalhe-card {
+
+      background: #f8fafc;
+
+      border:
+        1px solid #dbe3ee;
+
+      border-radius: 10px;
+
+      padding: 15px;
+
+    }
+
+
+    .detalhe-card .label {
+
+      font-size: 10px;
+
+      color: #64748b;
+
+      text-transform: uppercase;
+
+      margin-bottom: 5px;
+
+    }
+
+
+    .detalhe-card .valor {
+
+      font-size: 14px;
+
+      font-weight: bold;
+
+      color: #0f2545;
+
+      word-break: break-word;
+
+    }
+
+
+    .detalhe-destaque {
+
+      padding:
+        14px 16px;
+
+      border-radius: 9px;
+
+      background: #eef4fb;
+
+      border-left:
+        4px solid #1d4ed8;
+
+      margin-bottom: 20px;
+
+      color: #334155;
+
+      font-size: 12px;
+
+    }
+
+
+    .historico {
+
+      display: flex;
+
+      flex-direction: column;
+
+      gap: 11px;
+
+    }
+
+
+    .historico-item {
+
+      display: flex;
+
+      gap: 12px;
+
+      align-items: flex-start;
+
+    }
+
+
+    .historico-ponto {
+
+      width: 10px;
+      height: 10px;
+
+      border-radius: 50%;
+
+      background: #1d4ed8;
+
+      margin-top: 4px;
+
+      flex-shrink: 0;
+
+    }
+
+
+    .historico-texto {
+
+      font-size: 12px;
+
+      color: #334155;
+
+      line-height: 1.5;
+
+    }
+
+
+    .historico-vazio {
+
+      color: #94a3b8;
+
+      font-size: 12px;
+
+    }
+
+
+    /* ========================================================
+       FECHAMENTO
+       ======================================================== */
+
+    .cabecalho-fechamento {
+
+      display: flex;
+
+      justify-content:
+        space-between;
+
+      align-items: center;
+
+      gap: 15px;
+
+      margin-bottom: 22px;
+
+    }
+
+
+    .titulo-fechamento {
+
+      margin: 0;
+
+      color: #0f2545;
+
+      font-size: 24px;
+
+    }
+
+
+    .painel-fechamento {
+
+      border:
+        1px solid #dbe3ee;
+
+      background: #f8fafc;
+
+      padding: 20px;
+
+      border-radius: 10px;
+
+      margin-bottom: 22px;
+
+    }
+
+
+    .fechamento-controles {
+
+      display: grid;
+
+      grid-template-columns:
+        1fr 1fr 1fr auto;
+
+      gap: 12px;
+
+      align-items: end;
+
+    }
+
+
+    .controle-fechamento label {
+
+      display: block;
+
+      font-size: 11px;
+
+      font-weight: bold;
+
+      margin-bottom: 6px;
+
+      color: #0f2545;
+
+    }
+
+
+    .resumo-fechamento {
+
+      display: grid;
+
+      grid-template-columns:
+        repeat(3, 1fr);
+
+      gap: 15px;
+
+      margin-bottom: 25px;
+
+    }
+
+
+    .card-resumo {
+
+      border:
+        1px solid #dbe3ee;
+
+      border-radius: 10px;
+
+      padding: 20px;
+
+      background: white;
+
+    }
+
+
+    .card-resumo .label {
+
+      display: block;
+
+      color: #64748b;
+
+      font-size: 13px;
+
+      margin-bottom: 6px;
+
+    }
+
+
+    .card-resumo .numero {
+
+      color: #0f2545;
+
+      font-size: 30px;
+
+      font-weight: bold;
+
+    }
+
+
+    .titulo-secao-fechamento {
+
+      color: #0f2545;
+
+      margin:
+        0 0 12px;
+
+      font-size: 17px;
+
+    }
+
+
+    .tabela-fechamento {
+
+      margin-bottom: 30px;
+
+    }
+
+
+    .periodo-fechamento {
+
+      padding: 12px 15px;
+
+      background: #eef4fb;
+
+      border-left:
+        4px solid #1d4ed8;
+
+      border-radius: 5px;
+
+      margin-bottom: 20px;
+
+      color: #334155;
+
+      font-size: 13px;
+
+    }
+
+
+    /* ========================================================
+       FINANCEIRO
+       ======================================================== */
+
+    .cards-financeiro {
+
+      display: grid;
+
+      grid-template-columns:
+        repeat(4, 1fr);
+
+      gap: 15px;
+
+      margin-bottom: 20px;
+
+    }
+
+
+    .card-financeiro {
+
+      border:
+        1px solid #dbe3ee;
+
+      border-radius: 12px;
+
+      padding: 18px;
+
+      background: white;
+
+    }
+
+
+    .card-financeiro .label {
+
+      display: block;
+
+      font-size: 11px;
+
+      color: #64748b;
+
+      margin-bottom: 6px;
+
+    }
+
+
+    .card-financeiro .valor {
+
+      font-size: 26px;
+
+      font-weight: 800;
+
+      color: #0f2545;
+
+    }
+
+
+    .financeiro-grid {
+
+      display: grid;
+
+      grid-template-columns:
+        1.3fr 1fr;
+
+      gap: 18px;
+
+      margin-bottom: 18px;
+
+    }
+
+
+    .status-financeiro {
+
+      display: flex;
+
+      flex-direction: column;
+
+      gap: 12px;
+
+    }
+
+
+    .status-linha {
+
+      display: grid;
+
+      grid-template-columns:
+        95px 1fr 50px;
+
+      align-items: center;
+
+      gap: 10px;
+
+    }
+
+
+    .status-linha .nome {
+
+      font-size: 11px;
+
+      color: #334155;
+
+    }
+
+
+    .status-linha .barra {
+
+      max-width: none;
+
+      width: 100%;
+
+      height: 9px;
+
+      border-radius: 999px;
+
+      background: #edf2f7;
+
+    }
+
+
+    .status-linha .barra span {
+
+      display: block;
+
+      height: 100%;
+
+      border-radius: 999px;
+
+    }
+
+
+    .barra-amarela {
+      background: #f59e0b;
+    }
+
+
+    .barra-verde {
+      background: #16a34a;
+    }
+
+
+    .barra-vermelha {
+      background: #dc2626;
+    }
+
+
+    .status-linha .quantidade {
+
+      text-align: right;
+
+      font-size: 11px;
+
+      font-weight: bold;
+
+      color: #0f2545;
+
+    }
+
+
+    /* ========================================================
+       COMPROVANTE
+       ======================================================== */
+
+    #telaComprovante,
+    #telaComprovanteFechamento {
+
+      display: none;
+
+    }
+
+
+    .comprovante-wrapper {
+
+      background: #e5e7eb;
+
+      padding: 30px;
+
+      min-height:
+        calc(100vh - 90px);
+
+    }
+
+
+    .comprovante-acoes {
+
+      max-width: 210mm;
+
+      margin:
+        0 auto 20px;
+
+      display: flex;
+
+      gap: 10px;
+
+    }
+
+
+    .botao-comprovante {
+
+      border: none;
+
+      border-radius: 7px;
+
+      padding:
+        12px 18px;
+
+      background: #1d4ed8;
+
+      color: white;
+
+      font-weight: bold;
+
+      cursor: pointer;
+
+    }
+
+
+    .botao-comprovante.secundario {
+
+      background: #475569;
+
+    }
+
+
+    .folha-a4 {
+
+      width: 210mm;
+
+      min-height: 297mm;
+
+      margin: 0 auto;
+
+      background: white;
+
+      padding: 18mm;
+
+      box-shadow:
+        0 5px 25px rgba(0,0,0,0.18);
+
+      position: relative;
+
+    }
+
+
+    .cabecalho-comprovante {
+
+      display: flex;
+
+      justify-content:
+        space-between;
+
+      align-items: center;
+
+      padding-bottom: 18px;
+
+      border-bottom:
+        3px solid #0f2545;
+
+    }
+
+
+    .logo-area {
+
+      display: flex;
+
+      align-items: center;
+
+      gap: 15px;
+
+    }
+
+
+    .logo-area img {
+
+      width: 80px;
+
+      height: 80px;
+
+      object-fit: contain;
+
+    }
+
+
+    .empresa-nome {
+
+      font-size: 16px;
+
+      font-weight: bold;
+
+      color: #0f2545;
+
+      max-width: 280px;
+
+    }
+
+
+    .empresa-cnpj {
+
+      margin-top: 5px;
+
+      font-size: 12px;
+
+      color: #64748b;
+
+    }
+
+
+    .marca {
+      text-align: right;
+    }
+
+
+    .marca-als {
+
+      font-size: 34px;
+
+      font-weight: 900;
+
+      color: #0f2545;
+
+      line-height: 1;
+
+    }
+
+
+    .marca-transporte {
+
+      font-size: 12px;
+
+      letter-spacing: 3px;
+
+      color: #1d4ed8;
+
+      margin-top: 5px;
+
+    }
+
+
+    .titulo-comprovante {
+
+      text-align: center;
+
+      margin-top: 35px;
+
+      margin-bottom: 30px;
+
+    }
+
+
+    .titulo-comprovante h1 {
+
+      margin: 0;
+
+      font-size: 25px;
+
+      color: #0f2545;
+
+      letter-spacing: 1px;
+
+    }
+
+
+    .titulo-comprovante p {
+
+      margin-top: 8px;
+
+      color: #64748b;
+
+      font-size: 12px;
+
+    }
+
+
+    .numero-documento {
+
+      text-align: right;
+
+      font-size: 12px;
+
+      color: #64748b;
+
+      margin-bottom: 20px;
+
+    }
+
+
+    .numero-documento strong {
+      color: #0f2545;
+    }
+
+
+    .bloco {
+
+      border:
+        1px solid #cbd5e1;
+
+      border-radius: 5px;
+
+      margin-bottom: 20px;
+
+      overflow: hidden;
+
+    }
+
+
+    .bloco-titulo {
+
+      background: #0f2545;
+
+      color: white;
+
+      padding:
+        9px 12px;
+
+      font-size: 12px;
+
+      font-weight: bold;
+
+      letter-spacing: 0.5px;
+
+    }
+
+
+    .bloco-conteudo {
+      padding: 15px;
+    }
+
+
+    .grid-2 {
+
+      display: grid;
+
+      grid-template-columns:
+        1fr 1fr;
+
+      gap: 18px;
+
+    }
+
+
+    .grid-3 {
+
+      display: grid;
+
+      grid-template-columns:
+        1fr 1fr 1fr;
+
+      gap: 18px;
+
+    }
+
+
+    .campo-documento {
+      margin-bottom: 10px;
+    }
+
+
+    .campo-documento .label {
+
+      display: block;
+
+      color: #64748b;
+
+      font-size: 10px;
+
+      text-transform: uppercase;
+
+      margin-bottom: 4px;
+
+    }
+
+
+    .campo-documento .valor-doc {
+
+      display: block;
+
+      color: #0f172a;
+
+      font-size: 13px;
+
+      font-weight: bold;
+
+    }
+
+
+    .valor-total {
+
+      text-align: right;
+
+      padding:
+        15px 0 5px;
+
+      border-top:
+        1px solid #cbd5e1;
+
+      margin-top: 15px;
+
+    }
+
+
+    .valor-total span {
+
+      display: block;
+
+      font-size: 11px;
+
+      color: #64748b;
+
+      text-transform: uppercase;
+
+    }
+
+
+    .valor-total strong {
+
+      display: block;
+
+      font-size: 26px;
+
+      color: #1d4ed8;
+
+      margin-top: 3px;
+
+    }
+
+
+    .observacao-documento {
+
+      min-height: 70px;
+
+      font-size: 13px;
+
+      color: #334155;
+
+      white-space: pre-wrap;
+
+    }
+
+
+    .assinatura-dupla {
+
+      margin-top: 70px;
+
+      display: grid;
+
+      grid-template-columns: 1fr 1fr;
+
+      gap: 60px;
+
+    }
+
+
+    .assinatura-linha {
+
+      width: 300px;
+
+      text-align: center;
+
+      padding-top: 10px;
+
+      border-top:
+        1px solid #334155;
+
+    }
+
+
+    .assinatura-dupla .assinatura-linha {
+
+      width: 100%;
+
+    }
+
+
+    .assinatura-linha strong {
+
+      display: block;
+
+      font-size: 12px;
+
+      color: #0f2545;
+
+    }
+
+
+    .assinatura-linha span {
+
+      display: block;
+
+      font-size: 10px;
+
+      color: #64748b;
+
+      margin-top: 4px;
+
+    }
+
+
+    .assinatura-digital {
+
+      position: relative;
+
+      padding-left: 8px;
+
+      padding-right: 8px;
+
+    }
+
+
+    .assinatura-digital strong {
+
+      display: block;
+
+      font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+      font-size: 12px;
+
+      font-weight: 700;
+
+      font-style: normal;
+
+      letter-spacing: 0.8px;
+
+      text-transform: uppercase;
+
+      color: #0f2545;
+
+      line-height: 1.4;
+
+    }
+
+
+    .assinatura-digital span {
+
+      display: block;
+
+      font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+      font-size: 9px;
+
+      font-weight: 400;
+
+      color: #64748b;
+
+      letter-spacing: 0.4px;
+
+      margin-top: 5px;
+
+    }
+
+
+    .rodape-comprovante {
+
+      position: absolute;
+
+      bottom: 12mm;
+
+      left: 18mm;
+
+      right: 18mm;
+
+      padding-top: 10px;
+
+      border-top:
+        1px solid #cbd5e1;
+
+      text-align: center;
+
+      font-size: 9px;
+
+      color: #94a3b8;
+
+    }
+
+
+    /* ========================================================
+       RECIBO DE FECHAMENTO
+       ======================================================== */
+
+    .resumo-recibo {
+
+      display: grid;
+
+      grid-template-columns:
+        1fr 1fr;
+
+      gap: 15px;
+
+      margin-bottom: 20px;
+
+    }
+
+
+    .card-recibo {
+
+      border:
+        1px solid #dbe3ee;
+
+      border-radius: 8px;
+
+      padding: 16px;
+
+      background: #f8fafc;
+
+    }
+
+
+    .card-recibo .label {
+
+      display: block;
+
+      color: #64748b;
+
+      font-size: 11px;
+
+      text-transform: uppercase;
+
+      margin-bottom: 5px;
+
+    }
+
+
+    .card-recibo .valor {
+
+      font-size: 22px;
+
+      color: #0f2545;
+
+    }
+
+
+    .card-recibo-pagamento {
+
+      margin-top: 18px;
+
+      padding: 18px;
+
+      border-radius: 8px;
+
+      background: #eef4fb;
+
+      border-left:
+        4px solid #1d4ed8;
+
+      text-align: right;
+
+    }
+
+
+    .card-recibo-pagamento span {
+
+      display: block;
+
+      font-size: 11px;
+
+      color: #64748b;
+
+      text-transform: uppercase;
+
+    }
+
+
+    .card-recibo-pagamento strong {
+
+      display: block;
+
+      margin-top: 4px;
+
+      font-size: 28px;
+
+      color: #1d4ed8;
+
+    }
+
+
+    .declaracao-pagamento {
+
+      margin-top: 25px;
+
+      padding: 15px;
+
+      border:
+        1px solid #cbd5e1;
+
+      border-radius: 6px;
+
+      color: #334155;
+
+      font-size: 12px;
+
+      line-height: 1.6;
+
+      background: #ffffff;
+
+    }
+
+
+    .dados-pagamento {
+
+      display: grid;
+
+      grid-template-columns:
+        1fr 1fr;
+
+      gap: 20px;
+
+      margin-top: 20px;
+
+      font-size: 12px;
+
+      color: #334155;
+
+    }
+
+
+    .campo-linha {
+
+      padding-bottom: 7px;
+
+      border-bottom:
+        1px solid #cbd5e1;
+
+    }
+
+
+    .tabela-recibo {
+
+      width: 100%;
+
+      border-collapse: collapse;
+
+      min-width: 0;
+
+    }
+
+
+    .tabela-recibo th {
+
+      font-size: 10px;
+
+      padding: 9px;
+
+    }
+
+
+    .tabela-recibo td {
+
+      font-size: 10px;
+
+      padding: 9px;
+
+    }
+
+
+    /* ========================================================
+       SEM REGISTROS
+       ======================================================== */
+
+    .sem-registros {
+
+      text-align: center;
+
+      padding: 45px 20px;
+
+      color: #64748b;
+
+    }
+
+
+    /* ========================================================
+       RESPONSIVO
+       ======================================================== */
+
+    @media (max-width: 1050px) {
+
+      .cards-dashboard,
+      .cards-financeiro {
+
+        grid-template-columns:
+          repeat(2, 1fr);
+
+      }
+
+
+      .dashboard-grid,
+      .financeiro-grid {
+
+        grid-template-columns:
+          1fr;
+
+      }
+
+
+      .filtros-grid {
+
+        grid-template-columns:
+          repeat(2, 1fr);
+
+      }
+
+
+      .detalhes-grid {
+
+        grid-template-columns:
+          repeat(2, 1fr);
+
+      }
+
+    }
+
+
+    @media (max-width: 700px) {
+
+      .container {
+
+        margin-top: 80px;
+
+        width:
+          calc(100% - 20px);
+
+        padding: 22px;
+
+      }
+
+
+      .dashboard-topo,
+      .cabecalho-pagina,
+      .cabecalho-relatorio,
+      .cabecalho-fechamento,
+      .detalhes-cabecalho {
+
+        flex-direction: column;
+
+        align-items: stretch;
+
+      }
+
+
+      .data-hora-atual {
+
+        position: static;
+
+        text-align: center;
+
+        margin-bottom: 16px;
+
+      }
+
+
+      .titulo {
+
+        font-size: 28px;
+
+      }
+
+
+      .cards-dashboard,
+      .cards-financeiro,
+      .resumo-fechamento,
+      .detalhes-grid {
+
+        grid-template-columns:
+          1fr;
+
+      }
+
+
+      .filtros-grid {
+
+        grid-template-columns:
+          1fr;
+
+      }
+
+
+      .fechamento-controles {
+
+        grid-template-columns:
+          1fr;
+
+      }
+
+
+      .botoes-relatorio {
+
+        flex-direction: column;
+
+        align-items: stretch;
+
+      }
+
+
+      .botoes-relatorio button {
+
+        width: 100%;
+
+      }
+
+
+      .linha-grafico {
+
+        grid-template-columns:
+          90px 1fr 58px;
+
+      }
+
+
+      .folha-a4 {
+
+        width: 100%;
+
+        min-height: auto;
+
+        padding: 20px;
+
+      }
+
+
+      .comprovante-wrapper {
+        padding: 10px;
+      }
+
+
+      .cabecalho-comprovante {
+
+        flex-direction: column;
+
+        align-items: flex-start;
+
+        gap: 20px;
+
+      }
+
+
+      .marca {
+        text-align: left;
+      }
+
+
+      .grid-2,
+      .grid-3,
+      .resumo-recibo,
+      .dados-pagamento,
+      .assinatura-dupla {
+
+        grid-template-columns:
+          1fr;
+
+      }
+
+
+      .comprovante-acoes {
+
+        flex-direction: column;
+
+      }
+
+
+      .item-recente {
+
+        grid-template-columns:
+          1fr;
+
+      }
+
+    }
+
+
+    /* ========================================================
+       EXPERIÊNCIA MOBILE
+       ======================================================== */
+
+    .mobile-topbar,
+    .mobile-bottom-nav {
+      display: none;
+    }
+
+    .corrida-mobile-card {
+      display: none;
+    }
+
+
+    @media (max-width: 700px) {
+
+      body {
+        padding-top: 58px;
+        padding-bottom: 78px;
+        background: #f2f4f7;
+      }
+
+      .menu-button {
+        display: none;
+      }
+
+      .sidebar {
+        display: none;
+      }
+
+      .mobile-topbar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 1200;
+        height: 58px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding:
+          0 15px;
+        background: #0f2545;
+        color: white;
+        box-shadow:
+          0 3px 12px rgba(15,37,69,0.22);
+      }
+
+      .mobile-topbar .marca {
+        text-align: left;
+        min-width: 0;
+      }
+
+      .mobile-topbar .empresa {
+        font-size: 14px;
+        font-weight: 800;
+        letter-spacing: 0.7px;
+        white-space: nowrap;
+      }
+
+      .mobile-topbar .sub {
+        margin-top: 2px;
+        font-size: 9px;
+        color: #8ea5c8;
+        letter-spacing: 0.8px;
+        text-transform: uppercase;
+        white-space: nowrap;
+      }
+
+      .mobile-topbar .status-mobile {
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        padding:
+          6px 8px;
+        border-radius: 999px;
+        background: #1c3a63;
+        color: #dbeafe;
+        font-size: 9px;
+        font-weight: 700;
+      }
+
+      .mobile-topbar .status-mobile .bolinha {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: #16a34a;
+      }
+
+      .mobile-bottom-nav {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 1200;
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        padding:
+          6px 4px
+          calc(6px + env(safe-area-inset-bottom));
+        background: rgba(255,255,255,0.98);
+        border-top: 1px solid #dbe3ee;
+        box-shadow:
+          0 -5px 18px rgba(15,37,69,0.12);
+        backdrop-filter: blur(10px);
+      }
+
+      .mobile-nav-item {
+        border: none;
+        background: transparent;
+        color: #64748b;
+        min-width: 0;
+        min-height: 58px;
+        padding:
+          6px 3px;
+        border-radius: 9px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 3px;
+        font-size: 9px;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      .mobile-nav-item .icone {
+        font-size: 19px;
+        line-height: 1;
+      }
+
+      .mobile-nav-item.ativo {
+        background: #eef4fb;
+        color: #1d4ed8;
+      }
+
+      .mobile-nav-item.ativo .icone {
+        transform: translateY(-1px);
+      }
+
+      .container {
+        margin-top: 14px;
+        margin-bottom: 14px;
+        width:
+          calc(100% - 14px);
+        max-width: none;
+        padding: 16px;
+        border-radius: 12px;
+        box-shadow:
+          0 5px 16px rgba(0,0,0,0.10);
+      }
+
+      .container-form {
+        max-width: none;
+      }
+
+      .titulo {
+        font-size: 24px;
+        padding-right: 4px;
+      }
+
+      .subtitulo {
+        font-size: 12px;
+        line-height: 1.5;
+        margin-bottom: 22px;
+      }
+
+      .dashboard-topo {
+        gap: 12px;
+        margin-bottom: 16px;
+      }
+
+      .dashboard-topo h2 {
+        font-size: 21px;
+        margin: 0;
+      }
+
+      .dashboard-topo p {
+        font-size: 12px;
+      }
+
+      .dashboard-saude {
+        width: 100%;
+        justify-content: space-between;
+        font-size: 11px;
+      }
+
+      .cards-dashboard {
+        grid-template-columns:
+          repeat(2, minmax(0,1fr));
+        gap: 10px;
+      }
+
+      .card-dashboard {
+        padding: 14px;
+        border-radius: 10px;
+      }
+
+      .card-dashboard .icone {
+        width: 34px;
+        height: 34px;
+        margin-bottom: 10px;
+        font-size: 16px;
+      }
+
+      .card-dashboard .numero {
+        font-size: 22px;
+      }
+
+      .card-dashboard .meta {
+        font-size: 10px;
+      }
+
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+
+      .painel {
+        padding: 14px;
+        border-radius: 10px;
+      }
+
+      .painel-titulo {
+        margin-bottom: 13px;
+      }
+
+      .painel-titulo strong {
+        font-size: 13px;
+      }
+
+      .painel-titulo span {
+        font-size: 9px;
+      }
+
+      .grafico-barras {
+        height: 175px;
+        gap: 4px;
+      }
+
+      .barra-label,
+      .barra-valor {
+        font-size: 8px;
+      }
+
+      .grafico-horizontal {
+        gap: 11px;
+      }
+
+      .linha-grafico {
+        grid-template-columns:
+          82px 1fr 52px;
+        gap: 7px;
+      }
+
+      .linha-grafico .nome,
+      .linha-grafico .valor {
+        font-size: 10px;
+      }
+
+      .lista-recente {
+        gap: 7px;
+      }
+
+      .item-recente {
+        grid-template-columns:
+          1fr auto;
+        gap: 8px;
+        padding: 10px;
+      }
+
+      .item-recente .numero {
+        grid-column: 1 / -1;
+      }
+
+      .frequentes-box {
+        padding: 12px;
+        margin-bottom: 18px;
+      }
+
+      .frequentes-titulo {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 2px;
+      }
+
+      .frequentes-grid {
+        gap: 7px;
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        padding-bottom: 3px;
+        scrollbar-width: thin;
+      }
+
+      .botao-frequente {
+        flex-shrink: 0;
+        min-height: 42px;
+        padding:
+          9px 11px;
+        font-size: 11px;
+      }
+
+      .campo {
+        margin-bottom: 16px;
+      }
+
+      .campo label {
+        font-size: 13px;
+      }
+
+      input,
+      select,
+      textarea {
+        font-size: 16px;
+        min-height: 46px;
+        padding:
+          11px 12px;
+        border-radius: 8px;
+      }
+
+      textarea {
+        min-height: 92px;
+      }
+
+      .local-linha {
+        gap: 7px;
+      }
+
+      .botao-remover {
+        width: 46px;
+        min-width: 46px;
+        min-height: 46px;
+      }
+
+      .botao-adicionar {
+        width: 100%;
+        min-height: 44px;
+        padding:
+          10px 12px;
+      }
+
+      .sugestoes-locais {
+        right: 53px;
+      }
+
+      .manual-box {
+        padding: 12px;
+        margin-bottom: 14px;
+      }
+
+      .retorno-box {
+        min-height: 46px;
+      }
+
+      .valor-box {
+        margin-top: 18px;
+        padding: 16px;
+      }
+
+      .valor {
+        font-size: 29px;
+      }
+
+      .botao-principal {
+        min-height: 52px;
+        margin-top: 18px;
+        font-size: 16px;
+        border-radius: 9px;
+      }
+
+      .acao-pos-registro {
+        flex-direction: column;
+      }
+
+      .acao-pos-registro .botao-comprovante,
+      .acao-pos-registro .botao {
+        width: 100%;
+        min-width: 0;
+      }
+
+      .cabecalho-pagina,
+      .cabecalho-relatorio,
+      .cabecalho-fechamento,
+      .detalhes-cabecalho {
+        gap: 12px;
+      }
+
+      .cabecalho-pagina h2,
+      .titulo-relatorio,
+      .titulo-fechamento {
+        font-size: 20px;
+      }
+
+      .botoes-relatorio {
+        display: grid;
+        grid-template-columns:
+          1fr 1fr;
+        gap: 8px;
+      }
+
+      .botoes-relatorio button {
+        width: 100%;
+        min-height: 46px;
+      }
+
+      .botoes-relatorio button:first-child {
+        grid-column: 1 / -1;
+      }
+
+      .painel-filtros {
+        padding: 13px;
+      }
+
+      .filtros-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .botoes-filtro {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .botoes-filtro .botao {
+        min-height: 44px;
+      }
+
+      .tabela-wrapper {
+        overflow: visible;
+      }
+
+      .tabela-wrapper > table {
+        display: none;
+      }
+
+      .corrida-mobile-card {
+        display: block;
+        border:
+          1px solid #dbe3ee;
+        border-radius: 11px;
+        padding: 13px;
+        background: white;
+        margin-bottom: 9px;
+        box-shadow:
+          0 2px 7px rgba(15,37,69,0.06);
+      }
+
+      .corrida-mobile-topo {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 11px;
+      }
+
+      .corrida-mobile-numero {
+        font-size: 11px;
+        font-weight: 800;
+        color: #1d4ed8;
+      }
+
+      .corrida-mobile-data {
+        margin-top: 3px;
+        color: #64748b;
+        font-size: 10px;
+      }
+
+      .corrida-mobile-grid {
+        display: grid;
+        grid-template-columns:
+          1fr 1fr;
+        gap: 10px;
+        margin-bottom: 11px;
+      }
+
+      .corrida-mobile-campo {
+        min-width: 0;
+      }
+
+      .corrida-mobile-campo.full {
+        grid-column: 1 / -1;
+      }
+
+      .corrida-mobile-campo .label {
+        display: block;
+        margin-bottom: 3px;
+        color: #94a3b8;
+        font-size: 9px;
+        text-transform: uppercase;
+        font-weight: 700;
+      }
+
+      .corrida-mobile-campo .valor {
+        display: block;
+        color: #0f2545;
+        font-size: 12px;
+        font-weight: 700;
+        word-break: break-word;
+      }
+
+      .corrida-mobile-acoes {
+        display: grid;
+        grid-template-columns:
+          1fr 1fr;
+        gap: 7px;
+        padding-top: 10px;
+        border-top:
+          1px solid #edf1f5;
+      }
+
+      .corrida-mobile-acoes .botao-tabela {
+        min-height: 43px;
+        font-size: 11px;
+      }
+
+      .detalhes-acoes {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .detalhes-acoes .botao {
+        width: 100%;
+        min-height: 46px;
+      }
+
+      .detalhes-acoes .botao:first-child {
+        grid-column: 1 / -1;
+      }
+
+      .detalhes-grid {
+        grid-template-columns: 1fr;
+        gap: 9px;
+      }
+
+      .detalhe-card {
+        padding: 13px;
+      }
+
+      .detalhe-card .valor {
+        font-size: 13px;
+      }
+
+      .historico-item {
+        gap: 9px;
+      }
+
+      .historico-texto {
+        font-size: 11px;
+      }
+
+      .cards-financeiro {
+        grid-template-columns:
+          repeat(2, minmax(0,1fr));
+        gap: 10px;
+      }
+
+      .card-financeiro {
+        padding: 14px;
+      }
+
+      .card-financeiro .valor {
+        font-size: 21px;
+      }
+
+      .financeiro-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .status-linha {
+        grid-template-columns:
+          78px 1fr 36px;
+      }
+
+      .painel-fechamento {
+        padding: 14px;
+      }
+
+      .fechamento-controles {
+        grid-template-columns: 1fr;
+        gap: 9px;
+      }
+
+      .resumo-fechamento {
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+
+      .card-resumo {
+        padding: 15px;
+      }
+
+      .titulo-secao-fechamento {
+        font-size: 15px;
+      }
+
+      .periodo-fechamento {
+        font-size: 11px;
+      }
+
+      .folha-a4 {
+        width: 100%;
+        min-height: auto;
+        padding: 18px;
+      }
+
+      .comprovante-wrapper {
+        padding: 8px;
+      }
+
+      .comprovante-acoes {
+        flex-direction: column;
+      }
+
+      .comprovante-acoes button {
+        width: 100%;
+        min-height: 46px;
+      }
+
+      .cabecalho-comprovante {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+      }
+
+      .marca {
+        text-align: left;
+      }
+
+      .grid-2,
+      .grid-3,
+      .resumo-recibo,
+      .dados-pagamento,
+      .assinatura-dupla {
+        grid-template-columns: 1fr;
+      }
+
+      .assinatura-dupla {
+        gap: 30px;
+        margin-top: 45px;
+      }
+
+      .rodape-comprovante {
+        position: static;
+        margin-top: 30px;
+      }
+
+    }
+
+
+    /* ========================================================
+       IMPRESSÃO
+       ======================================================== */
+
+    @media print {
+
+      body {
+        background: white !important;
+      }
+
+
+      .menu-button,
+      .sidebar,
+      .comprovante-acoes {
+        display: none !important;
+      }
+
+
+      #telaDashboard,
+      #telaSolicitacao,
+      #telaRelatorio,
+      #telaFechamento,
+      #telaDetalhes,
+      #telaFinanceiro {
+
+        display: none !important;
+
+      }
+
+
+      .comprovante-wrapper {
+
+        padding: 0 !important;
+
+        background: white !important;
+
+        min-height: auto;
+
+      }
+
+
+      .folha-a4 {
+
+        width: 210mm;
+
+        min-height: 297mm;
+
+        margin: 0;
+
+        padding: 18mm;
+
+        box-shadow: none;
+
+      }
+
+
+      body.imprimir-corrida
+      #telaComprovante {
+
+        display: block !important;
+
+      }
+
+
+      body.imprimir-corrida
+      #telaComprovanteFechamento {
+
+        display: none !important;
+
+      }
+
+
+      body.imprimir-fechamento
+      #telaComprovante {
+
+        display: none !important;
+
+      }
+
+
+      body.imprimir-fechamento
+      #telaComprovanteFechamento {
+
+        display: block !important;
+
+      }
+
+
+      @page {
+
+        size: A4 portrait;
+
+        margin: 0;
+
+      }
+
+    }
+
+  </style>
+
+</head>
+
+
+<body>
+
+
+<!-- ============================================================
+     MENU
+     ============================================================ -->
+
+<button
+  class="menu-button"
+  onclick="alternarMenu()">
+
+  ☰
+
+</button>
+
+
+<div
+  id="sidebar"
+  class="sidebar">
+
+
+  <div class="sidebar-marca">
+
+    <div class="empresa">
+      ALS TRANSPORTES
+    </div>
+
+    <div class="sub">
+      Central operacional
+    </div>
+
+  </div>
+
+
+  <div class="menu-secao">
+    Principal
+  </div>
+
+
+  <div
+    id="menuDashboard"
+    class="menu-item ativo"
+    onclick="abrirDashboard()">
+
+    🏠 Dashboard
+
+  </div>
+
+
+  <div
+    id="menuNovaCorrida"
+    class="menu-item"
+    onclick="abrirSolicitacao()">
+
+    🏍️ Nova corrida
+
+  </div>
+
+
+  <div
+    id="menuRelatorio"
+    class="menu-item"
+    onclick="abrirRelatorio()">
+
+    📋 Corridas
+
+  </div>
+
+
+  <div
+    id="menuFinanceiro"
+    class="menu-item"
+    onclick="abrirFinanceiro()">
+
+    💰 Financeiro
+
+  </div>
+
+
+  <div
+    id="menuFechamento"
+    class="menu-item"
+    onclick="abrirFechamento()">
+
+    📑 Fechamentos
+
+  </div>
+
+
+</div>
+
+
+<!-- ============================================================
+     NAVEGAÇÃO MOBILE
+     ============================================================ -->
+
+<div class="mobile-topbar">
+
+  <div class="marca">
+
+    <div class="empresa">
+      ALS TRANSPORTES
+    </div>
+
+    <div class="sub">
+      Central operacional
+    </div>
+
+  </div>
+
+  <div class="status-mobile">
+
+    <span class="bolinha"></span>
+    Online
+
+  </div>
+
+</div>
+
+
+<nav class="mobile-bottom-nav">
+
+  <button
+    id="mobileMenuDashboard"
+    class="mobile-nav-item ativo"
+    onclick="abrirDashboard()">
+
+    <span class="icone">🏠</span>
+    <span>Início</span>
+
+  </button>
+
+
+  <button
+    id="mobileMenuNovaCorrida"
+    class="mobile-nav-item"
+    onclick="abrirSolicitacao()">
+
+    <span class="icone">🏍️</span>
+    <span>Nova</span>
+
+  </button>
+
+
+  <button
+    id="mobileMenuRelatorio"
+    class="mobile-nav-item"
+    onclick="abrirRelatorio()">
+
+    <span class="icone">📋</span>
+    <span>Corridas</span>
+
+  </button>
+
+
+  <button
+    id="mobileMenuFinanceiro"
+    class="mobile-nav-item"
+    onclick="abrirFinanceiro()">
+
+    <span class="icone">💰</span>
+    <span>Financeiro</span>
+
+  </button>
+
+
+  <button
+    id="mobileMenuFechamento"
+    class="mobile-nav-item"
+    onclick="abrirFechamento()">
+
+    <span class="icone">📑</span>
+    <span>Fechamentos</span>
+
+  </button>
+
+</nav>
+
+
+<!-- ============================================================
+     LISTAS DE SUGESTÕES
+     ============================================================ -->
+
+<datalist id="listaSolicitantes">
+</datalist>
+
+
+<datalist id="listaMotoboys">
+</datalist>
+
+
+<datalist id="listaLocais">
+</datalist>
+
+
+<!-- ============================================================
+     DASHBOARD
+     ============================================================ -->
+
+<div
+  id="telaDashboard"
+  class="container">
+
+
+  <div class="dashboard-topo">
+
+    <div>
+
+      <h2>
+        <span id="dashboardSaudacao">
+          Bom dia
+        </span>
+        👋
+      </h2>
+
+      <p>
+        Central de acompanhamento das corridas.
+      </p>
+
+    </div>
+
+
+    <div class="dashboard-saude">
+
+      <span class="bolinha"></span>
+
+      Sistema operacional
+
+      <strong
+        id="dashboardUltimaAtualizacao">
+        -
+      </strong>
+
+    </div>
+
+  </div>
+
+
+  <div
+    id="cardsDashboard"
+    class="cards-dashboard">
+
+  </div>
+
+
+  <div class="dashboard-grid">
+
+
+    <div class="painel">
+
+      <div class="painel-titulo">
+
+        <strong>
+          💰 Valores dos últimos 7 dias
+        </strong>
+
+        <span>
+          Corridas não canceladas
+        </span>
+
+      </div>
+
+
+      <div
+        id="graficoDashboardValores"
+        class="grafico-barras">
+
+      </div>
+
+    </div>
+
+
+    <div class="painel">
+
+      <div class="painel-titulo">
+
+        <strong>
+          🏍️ Valores por motoboy
+        </strong>
+
+        <span>
+          Período atual
+        </span>
+
+      </div>
+
+
+      <div
+        id="graficoDashboardMotoboys"
+        class="grafico-horizontal">
+
+      </div>
+
+    </div>
+
+
+  </div>
+
+
+  <div
+    class="dashboard-grid"
+    style="margin-top:18px;">
+
+
+    <div class="painel">
+
+      <div class="painel-titulo">
+
+        <strong>
+          🕐 Corridas recentes
+        </strong>
+
+        <span>
+          Últimos registros
+        </span>
+
+      </div>
+
+
+      <div
+        id="listaCorridasRecentes"
+        class="lista-recente">
+
+      </div>
+
+    </div>
+
+
+    <div class="painel">
+
+      <div class="painel-titulo">
+
+        <strong>
+          ⭐ Corridas frequentes
+        </strong>
+
+        <span>
+          Sugestões automáticas
+        </span>
+
+      </div>
+
+
+      <div
+        id="frequentesDashboard"
+        class="frequentes-grid">
+
+      </div>
+
+    </div>
+
+
+  </div>
+
+</div>
+
+
+<!-- ============================================================
+     NOVA CORRIDA
+     ============================================================ -->
+
+<div
+  id="telaSolicitacao"
+  class="container container-form"
+  style="display:none;">
+
+
+  <div
+    id="dataHoraAtual"
+    class="data-hora-atual">
+
+    <span
+      id="dataAtual"
+      class="data">
+    </span>
+
+    <span
+      id="horaAtual"
+      class="hora">
+    </span>
+
+  </div>
+
+
+  <div class="titulo">
+    Solicitar Corrida
+  </div>
+
+
+  <div class="subtitulo">
+    Preencha os dados da corrida abaixo
+  </div>
+
+
+  <!-- SOLICITANTE -->
+
+  <div class="campo">
+
+    <label>
+      Solicitante *
+    </label>
+
+
+    <input
+      type="text"
+      id="solicitante"
+      list="listaSolicitantes"
+      placeholder="Digite ou selecione o solicitante"
+      autocomplete="off">
+
+  </div>
+
+
+  <!-- MOTOBOY -->
+
+  <div class="campo">
+
+    <label>
+      Motoboy *
+    </label>
+
+
+    <input
+      type="text"
+      id="motoboy"
+      list="listaMotoboys"
+      placeholder="Digite ou selecione o motoboy"
+      autocomplete="off">
+
+  </div>
+
+
+  <!-- CORRIDAS FREQUENTES -->
+
+  <div class="frequentes-box">
+
+    <div class="frequentes-titulo">
+
+      <strong>
+        ⭐ Corridas frequentes
+      </strong>
+
+      <span>
+        Clique para preencher automaticamente
+      </span>
+
+    </div>
+
+
+    <div
+      id="frequentesNovaCorrida"
+      class="frequentes-grid">
+
+    </div>
+
+  </div>
+
+
+  <!-- LOCAIS -->
+
+  <div
+    id="areaLocais"
+    class="campo"
+    style="margin-top:20px;">
+
+    <label>
+      Local da corrida *
+    </label>
+
+
+    <div id="locaisContainer">
+    </div>
+
+
+    <button
+      type="button"
+      class="botao-adicionar"
+      onclick="adicionarLocal()">
+
+      + ADICIONAR OUTRO LOCAL
+
+    </button>
+
+  </div>
+
+
+  <!-- MODO MANUAL -->
+
+  <div class="manual-box">
+
+    <label class="manual-toggle">
+
+      <input
+        type="checkbox"
+        id="modoManual"
+        onchange="alternarModoManual()">
+
+      Corrida manual / emergência
+
+    </label>
+
+
+    <div
+      id="areaManual"
+      style="display:none; margin-top:15px;">
+
+      <div class="campo">
+
+        <label>
+          Descrição da corrida *
+        </label>
+
+
+        <input
+          type="text"
+          id="descricaoManual"
+          placeholder="Ex.: Entrega emergencial - Santos">
+
+      </div>
+
+
+      <div class="campo">
+
+        <label>
+          Valor final *
+        </label>
+
+
+        <input
+          type="number"
+          id="valorManual"
+          min="0"
+          step="0.01"
+          placeholder="0,00"
+          oninput="calcularValor()">
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- RETORNO -->
+
+  <div
+    id="areaRetorno"
+    class="campo">
+
+    <label>
+      Retorno
+    </label>
+
+
+    <div class="retorno-box">
+
+      <input
+        type="checkbox"
+        id="retorno"
+        onchange="calcularValor()">
+
+
+      <label for="retorno">
+        Incluir retorno
+      </label>
+
+    </div>
+
+  </div>
+
+
+  <!-- VALOR -->
+
+  <div class="valor-box">
+
+    <div class="valor-label">
+      Valor total da corrida
+    </div>
+
+
+    <div
+      id="valorTotal"
+      class="valor">
+
+      R$ 0,00
+
+    </div>
+
+  </div>
+
+
+  <!-- OBSERVAÇÃO -->
+
+  <div class="campo">
+
+    <label>
+      Observação
+    </label>
+
+
+    <textarea
+      id="observacao"
+      placeholder="Digite alguma observação, se necessário..."></textarea>
+
+  </div>
+
+
+  <!-- REGISTRAR -->
+
+  <button
+    id="botaoRegistrar"
+    class="botao-principal"
+    onclick="registrar()">
+
+    REGISTRAR CORRIDA
+
+  </button>
+
+
+  <div
+    id="mensagem"
+    class="mensagem">
+
+  </div>
+
+
+  <!-- AÇÕES APÓS REGISTRO -->
+
+  <div
+    id="acaoComprovante"
+    class="acao-pos-registro"
+    style="display:none;">
+
+    <button
+      type="button"
+      class="botao-comprovante"
+      onclick="emitirComprovanteRecemGerado()">
+
+      📄 EMITIR COMPROVANTE
+
+    </button>
+
+  </div>
+
+</div>
+
+
+<!-- ============================================================
+     RELATÓRIO
+     ============================================================ -->
+
+<div
+  id="telaRelatorio"
+  class="container"
+  style="display:none;">
+
+
+  <div class="cabecalho-relatorio">
+
+    <div>
+
+      <h2 class="titulo-relatorio">
+        📋 Corridas registradas
+      </h2>
+
+      <p
+        style="
+          margin:5px 0 0;
+          color:#64748b;
+          font-size:13px;
+        ">
+
+        Consulte, filtre e acompanhe o status das corridas.
+
+      </p>
+
+    </div>
+
+
+    <div class="botoes-relatorio">
+
+      <button
+        class="botao botao-navy"
+        onclick="abrirFechamento()">
+
+        📑 Fechamento
+
+      </button>
+
+
+      <button
+        class="botao botao-claro"
+        onclick="alternarFiltros()">
+
+        🔎 Filtrar
+
+      </button>
+
+
+      <button
+        class="botao botao-azul"
+        onclick="carregarRelatorio()">
+
+        ↻ Atualizar
+
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- FILTROS -->
+
+  <div
+    id="painelFiltros"
+    class="painel-filtros">
+
+    <div class="filtros-grid">
+
+
+      <div class="filtro-campo">
+
+        <label>
+          Data inicial
+        </label>
+
+        <input
+          type="date"
+          id="filtroDataInicial">
+
+      </div>
+
+
+      <div class="filtro-campo">
+
+        <label>
+          Data final
+        </label>
+
+        <input
+          type="date"
+          id="filtroDataFinal">
+
+      </div>
+
+
+      <div class="filtro-campo">
+
+        <label>
+          Local
+        </label>
+
+        <select id="filtroLocal">
+
+          <option value="">
+            Todos os locais
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <div class="filtro-campo">
+
+        <label>
+          Solicitante
+        </label>
+
+        <select id="filtroSolicitante">
+
+          <option value="">
+            Todos os solicitantes
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <div class="filtro-campo">
+
+        <label>
+          Status
+        </label>
+
+        <select id="filtroStatus">
+
+          <option value="">
+            Todos os status
+          </option>
+
+          <option value="Solicitada">
+            Solicitada
+          </option>
+
+          <option value="Concluída">
+            Concluída
+          </option>
+
+          <option value="Cancelada">
+            Cancelada
+          </option>
+
+        </select>
+
+      </div>
+
+    </div>
+
+
+    <div class="botoes-filtro">
+
+      <button
+        class="botao botao-claro"
+        onclick="limparFiltros()">
+
+        Limpar
+
+      </button>
+
+
+      <button
+        class="botao botao-azul"
+        onclick="aplicarFiltros()">
+
+        Aplicar filtros
+
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <div
+    id="resultadoFiltro"
+    class="resultado-filtro">
+
+  </div>
+
+
+  <div
+    id="areaTabelaRelatorio"
+    class="tabela-wrapper">
+
+  </div>
+
+</div>
+
+
+<!-- ============================================================
+     DETALHES DA CORRIDA
+     ============================================================ -->
+
+<div
+  id="telaDetalhes"
+  class="container"
+  style="display:none; max-width:1050px;">
+
+
+  <div class="detalhes-cabecalho">
+
+    <div class="detalhes-numero">
+
+      Nº da corrida
+
+      <strong id="detalheNumero">
+        -
+      </strong>
+
+    </div>
+
+
+    <div
+      id="detalheStatus"
+      class="status-badge status-solicitada">
+
+      🟡 Solicitada
+
+    </div>
+
+
+    <div class="detalhes-acoes">
+
+      <button
+        class="botao botao-azul"
+        onclick="emitirComprovanteDetalhe()">
+
+        📄 Emitir comprovante
+
+      </button>
+
+
+      <button
+        id="botaoCancelarDetalhe"
+        class="botao botao-vermelho"
+        onclick="cancelarCorridaAtual()">
+
+        ✕ Marcar como cancelada
+
+      </button>
+
+
+      <button
+        class="botao botao-claro"
+        onclick="voltarParaRelatorio()">
+
+        ← Voltar
+
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <div
+    id="detalhesInformacoes"
+    class="detalhes-grid">
+
+  </div>
+
+
+  <div
+    id="detalheMensagemStatus"
+    class="detalhe-destaque">
+
+  </div>
+
+
+  <div class="painel">
+
+    <div class="painel-titulo">
+
+      <strong>
+        🕘 Histórico da corrida
+      </strong>
+
+      <span>
+        Eventos registrados
+      </span>
+
+    </div>
+
+
+    <div
+      id="detalheHistorico"
+      class="historico">
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- ============================================================
+     FINANCEIRO
+     ============================================================ -->
+
+<div
+  id="telaFinanceiro"
+  class="container"
+  style="display:none;">
+
+
+  <div class="cabecalho-pagina">
+
+    <div>
+
+      <h2>
+        💰 Controle financeiro
+      </h2>
+
+      <p>
+        Acompanhamento dos valores das corridas e distribuição por motoboy.
+      </p>
+
+    </div>
+
+
+    <button
+      class="botao botao-azul"
+      onclick="renderizarFinanceiro()">
+
+      ↻ Atualizar
+
+    </button>
+
+  </div>
+
+
+  <div
+    id="cardsFinanceiro"
+    class="cards-financeiro">
+
+  </div>
+
+
+  <div class="financeiro-grid">
+
+
+    <div class="painel">
+
+      <div class="painel-titulo">
+
+        <strong>
+          📈 Valores por dia
+        </strong>
+
+        <span>
+          Últimos 14 dias
+        </span>
+
+      </div>
+
+
+      <div
+        id="graficoFinanceiroDias"
+        class="grafico-barras">
+
+      </div>
+
+    </div>
+
+
+    <div class="painel">
+
+      <div class="painel-titulo">
+
+        <strong>
+          🏍️ Valores por motoboy
+        </strong>
+
+        <span>
+          Mês atual
+        </span>
+
+      </div>
+
+
+      <div
+        id="graficoFinanceiroMotoboys"
+        class="grafico-horizontal">
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div class="painel">
+
+    <div class="painel-titulo">
+
+      <strong>
+        📊 Situação das corridas
+      </strong>
+
+      <span>
+        Mês atual
+      </span>
+
+    </div>
+
+
+    <div
+      id="statusFinanceiro"
+      class="status-financeiro">
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- ============================================================
+     FECHAMENTO
+     ============================================================ -->
+
+<div
+  id="telaFechamento"
+  class="container"
+  style="display:none;">
+
+
+  <div class="cabecalho-fechamento">
+
+    <div>
+
+      <h2 class="titulo-fechamento">
+        📑 Fechamento de viagens
+      </h2>
+
+      <p
+        style="
+          margin:5px 0 0;
+          color:#64748b;
+          font-size:13px;
+        ">
+
+        Corridas canceladas ficam fora do fechamento.
+
+      </p>
+
+    </div>
+
+
+    <button
+      class="botao botao-cinza"
+      onclick="voltarParaRelatorio()">
+
+      ← Voltar ao relatório
+
+    </button>
+
+  </div>
+
+
+  <div class="painel-fechamento">
+
+    <div class="fechamento-controles">
+
+
+      <div class="controle-fechamento">
+
+        <label>
+          Tipo de fechamento
+        </label>
+
+        <select
+          id="tipoFechamento"
+          onchange="atualizarDataFinalFechamento()">
+
+          <option value="Semanal">
+            Semanal
+          </option>
+
+          <option value="Quinzenal">
+            Quinzenal
+          </option>
+
+          <option value="Mensal">
+            Mensal
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <div class="controle-fechamento">
+
+        <label>
+          Data inicial
+        </label>
+
+        <input
+          type="date"
+          id="dataInicialFechamento"
+          onchange="atualizarDataFinalFechamento()">
+
+      </div>
+
+
+      <div class="controle-fechamento">
+
+        <label>
+          Data final
+        </label>
+
+        <input
+          type="date"
+          id="dataFinalFechamento"
+          readonly>
+
+      </div>
+
+
+      <button
+        class="botao botao-azul"
+        onclick="gerarFechamento()">
+
+        GERAR FECHAMENTO
+
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <div
+    id="resultadoFechamento">
+
+  </div>
+
+</div>
+
+
+<!-- ============================================================
+     COMPROVANTE DE CORRIDA
+     ============================================================ -->
+
+<div
+  id="telaComprovante"
+  class="comprovante-wrapper">
+
+
+  <div class="comprovante-acoes">
+
+    <button
+      class="botao-comprovante"
+      onclick="imprimirComprovanteCorrida()">
+
+      🖨️ IMPRIMIR / SALVAR PDF
+
+    </button>
+
+
+    <button
+      class="botao-comprovante secundario"
+      onclick="voltarParaRelatorio()">
+
+      ← VOLTAR AO RELATÓRIO
+
+    </button>
+
+  </div>
+
+
+  <div
+    id="folhaComprovante"
+    class="folha-a4">
+
+
+    <div class="cabecalho-comprovante">
+
+
+      <div class="logo-area">
+
+        <img
+          src="https://operacional-ssz-als.vercel.app/logo.jpg"
+          alt="ALS">
+
+
+        <div>
+
+          <div class="empresa-nome">
+
+            LUARA MEL VIEIRA
+            TRANSPORTES LTDA.
+
+          </div>
+
+
+          <div class="empresa-cnpj">
+
+            CNPJ: 13.841.647/0004-30
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div class="marca">
+
+        <div class="marca-als">
+          ALS
+        </div>
+
+
+        <div class="marca-transporte">
+          TRANSPORTES
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="titulo-comprovante">
+
+      <h1>
+        COMPROVANTE DE CORRIDA
+      </h1>
+
+
+      <p>
+        Documento de controle e registro de serviço de transporte
+      </p>
+
+    </div>
+
+
+    <div class="numero-documento">
+
+      Nº do documento:
+
+      <strong id="docNumero">
+        -
+      </strong>
+
+    </div>
+
+
+    <div class="bloco">
+
+      <div class="bloco-titulo">
+        IDENTIFICAÇÃO DA CORRIDA
+      </div>
+
+
+      <div class="bloco-conteudo">
+
+        <div class="grid-2">
+
+
+          <div class="campo-documento">
+
+            <span class="label">
+              Solicitante
+            </span>
+
+
+            <span
+              id="docSolicitante"
+              class="valor-doc">
+
+              -
+
+            </span>
+
+          </div>
+
+
+          <div class="campo-documento">
+
+            <span class="label">
+              Prestador
+            </span>
+
+
+            <span
+              id="docMotoboy"
+              class="valor-doc">
+
+              -
+
+            </span>
+
+          </div>
+
+
+          <div class="campo-documento">
+
+            <span class="label">
+              Status
+            </span>
+
+
+            <span
+              id="docStatus"
+              class="valor-doc">
+
+              -
+
+            </span>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="bloco">
+
+      <div class="bloco-titulo">
+        DADOS DO SERVIÇO
+      </div>
+
+
+      <div class="bloco-conteudo">
+
+
+        <div class="grid-3">
+
+
+          <div class="campo-documento">
+
+            <span class="label">
+              Data
+            </span>
+
+
+            <span
+              id="docData"
+              class="valor-doc">
+
+              -
+
+            </span>
+
+          </div>
+
+
+          <div class="campo-documento">
+
+            <span class="label">
+              Horário
+            </span>
+
+
+            <span
+              id="docHorario"
+              class="valor-doc">
+
+              -
+
+            </span>
+
+          </div>
+
+
+          <div class="campo-documento">
+
+            <span class="label">
+              Emissão
+            </span>
+
+
+            <span
+              id="docEmissao"
+              class="valor-doc">
+
+              -
+
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <div
+          style="margin-top:20px;"
+          class="campo-documento">
+
+          <span class="label">
+            Corrida / Locais
+          </span>
+
+
+          <span
+            id="docCorrida"
+            class="valor-doc">
+
+            -
+
+          </span>
+
+        </div>
+
+
+        <div class="valor-total">
+
+          <span>
+            Valor total da corrida
+          </span>
+
+
+          <strong id="docValor">
+            R$ 0,00
+          </strong>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="bloco">
+
+      <div class="bloco-titulo">
+        OBSERVAÇÕES
+      </div>
+
+
+      <div class="bloco-conteudo">
+
+        <div
+          id="docObservacao"
+          class="observacao-documento">
+
+          Nenhuma observação registrada.
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="assinatura-dupla">
+
+      <div class="assinatura-linha">
+
+        <strong>
+          ASSINATURA DO PRESTADOR
+        </strong>
+
+
+        <span>
+          Assinatura e identificação do prestador
+        </span>
+
+      </div>
+
+
+      <div class="assinatura-linha assinatura-digital">
+
+        <strong>
+          LUARA MEL VIEIRA TRANSPORTES LTDA.
+        </strong>
+
+
+        <span>
+          CNPJ: 13.841.647/0004-30
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <div class="rodape-comprovante">
+
+      COMPROVANTE DE CORRIDA —
+      DOCUMENTO INTERNO DE CONTROLE
+
+    </div>
+
+
+  </div>
+
+</div>
+
+
+<!-- ============================================================
+     RECIBO DE FECHAMENTO
+     ============================================================ -->
+
+<div
+  id="telaComprovanteFechamento"
+  class="comprovante-wrapper">
+
+
+  <div class="comprovante-acoes">
+
+    <button
+      class="botao-comprovante"
+      onclick="imprimirComprovanteFechamento()">
+
+      🖨️ IMPRIMIR / SALVAR PDF
+
+    </button>
+
+
+    <button
+      class="botao-comprovante secundario"
+      onclick="voltarParaFechamento()">
+
+      ← VOLTAR AO FECHAMENTO
+
+    </button>
+
+  </div>
+
+
+  <div
+    id="folhaComprovanteFechamento"
+    class="folha-a4">
+
+
+    <div class="cabecalho-comprovante">
+
+
+      <div class="logo-area">
+
+        <img
+          src="https://operacional-ssz-als.vercel.app/logo.jpg"
+          alt="ALS">
+
+
+        <div>
+
+          <div class="empresa-nome">
+
+            LUARA MEL VIEIRA
+            TRANSPORTES LTDA.
+
+          </div>
+
+
+          <div class="empresa-cnpj">
+
+            CNPJ: 13.841.647/0004-30
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div class="marca">
+
+        <div class="marca-als">
+          ALS
+        </div>
+
+
+        <div class="marca-transporte">
+          TRANSPORTES
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="titulo-comprovante">
+
+      <h1>
+        RECIBO DE FECHAMENTO DE CORRIDAS
+      </h1>
+
+
+      <p>
+        Documento de conferência e registro de pagamento
+      </p>
+
+    </div>
+
+
+    <div class="numero-documento">
+
+      Nº do fechamento:
+
+      <strong id="docFechamentoNumero">
+        -
+      </strong>
+
+    </div>
+
+
+    <div class="bloco">
+
+      <div class="bloco-titulo">
+        IDENTIFICAÇÃO DO FECHAMENTO
+      </div>
+
+
+      <div class="bloco-conteudo">
+
+
+        <div class="grid-2">
+
+
+          <div class="campo-documento">
+
+            <span class="label">
+              Prestador
+            </span>
+
+
+            <span
+              id="docFechamentoPrestador"
+              class="valor-doc">
+
+              -
+
+            </span>
+
+          </div>
+
+
+          <div class="campo-documento">
+
+            <span class="label">
+              Tipo de fechamento
+            </span>
+
+
+            <span
+              id="docFechamentoTipo"
+              class="valor-doc">
+
+              -
+
+            </span>
+
+          </div>
+
+
+          <div class="campo-documento">
+
+            <span class="label">
+              Período
+            </span>
+
+
+            <span
+              id="docFechamentoPeriodo"
+              class="valor-doc">
+
+              -
+
+            </span>
+
+          </div>
+
+
+          <div class="campo-documento">
+
+            <span class="label">
+              Data de emissão
+            </span>
+
+
+            <span
+              id="docFechamentoEmissao"
+              class="valor-doc">
+
+              -
+
+            </span>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="resumo-recibo">
+
+
+      <div class="card-recibo">
+
+        <span class="label">
+          Total de corridas
+        </span>
+
+
+        <strong
+          id="docFechamentoTotalCorridas"
+          class="valor">
+
+          0
+
+        </strong>
+
+      </div>
+
+
+      <div class="card-recibo">
+
+        <span class="label">
+          Período
+        </span>
+
+
+        <strong
+          id="docFechamentoResumoPeriodo"
+          class="valor"
+          style="font-size:15px;">
+
+          -
+
+        </strong>
+
+      </div>
+
+    </div>
+
+
+    <div class="bloco">
+
+      <div class="bloco-titulo">
+        CORRIDAS APURADAS
+      </div>
+
+
+      <div class="bloco-conteudo">
+
+
+        <div class="tabela-wrapper">
+
+          <table
+            class="tabela-recibo">
+
+            <thead>
+
+              <tr>
+
+                <th>DATA</th>
+
+                <th>HORÁRIO</th>
+
+                <th>CORRIDA</th>
+
+                <th>SOLICITANTE</th>
+
+                <th>VALOR</th>
+
+              </tr>
+
+            </thead>
+
+
+            <tbody
+              id="tabelaReciboFechamento">
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+
+        <div class="card-recibo-pagamento">
+
+          <span>
+            Valor pago
+          </span>
+
+
+          <strong
+            id="docFechamentoValor">
+
+            R$ 0,00
+
+          </strong>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="declaracao-pagamento">
+
+      Declaro que conferi as corridas relacionadas
+      neste documento e estou ciente do valor total
+      apurado para este fechamento.
+
+    </div>
+
+
+    <div class="dados-pagamento">
+
+      <div class="campo-linha">
+
+        Data do pagamento:
+        <strong>
+          ____/____/________
+        </strong>
+
+      </div>
+
+
+      <div class="campo-linha">
+
+        Forma de pagamento:
+        <strong>
+          __________________________
+        </strong>
+
+      </div>
+
+    </div>
+
+
+    <div class="assinatura-dupla">
+
+      <div class="assinatura-linha">
+
+        <strong>
+          ASSINATURA DO PRESTADOR
+        </strong>
+
+
+        <span>
+          Assinatura e identificação do prestador
+        </span>
+
+      </div>
+
+
+      <div class="assinatura-linha assinatura-digital">
+
+        <strong>
+          LUARA MEL VIEIRA TRANSPORTES LTDA.
+        </strong>
+
+
+        <span>
+          CNPJ: 13.841.647/0004-30
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <div class="rodape-comprovante">
+
+      RECIBO DE FECHAMENTO DE CORRIDAS —
+      DOCUMENTO INTERNO DE CONTROLE E PAGAMENTO
+
+    </div>
+
+
+  </div>
+
+</div>
+
+
+<script>
+
+
+/* ============================================================
+   VARIÁVEIS
+   ============================================================ */
+
+let cadastros = {
+
+  motoboys: [],
+
+  solicitantes: []
+
+};
+
+
+let precos = {
+
+  corridas: {},
+
+  valorRetorno: 0,
+
+  combinacoesEspeciais: {},
+
+  valoresFixosEspeciais: {}
+
+};
+
+
+let dadosUltimaCorrida = null;
+
+let corridaSelecionada = null;
+
+let todasCorridas = [];
+
+let corridasExibidas = [];
+
+let dadosFechamentoAtual = null;
+
+let timerMensagemSucesso = null;
+
+let timerFadeMensagem = null;
+
+let intervaloAtualizacao = null;
+
+
+/* ============================================================
+   INICIALIZAÇÃO
+   ============================================================ */
+
+let larguraAnterior =
+  window.innerWidth;
+
+
+window.addEventListener(
+  'resize',
+  function() {
+
+    const larguraAtual =
+      window.innerWidth;
+
+
+    if (
+      (
+        larguraAnterior <= 700 &&
+        larguraAtual > 700
+      ) ||
+      (
+        larguraAnterior > 700 &&
+        larguraAtual <= 700
+      )
+    ) {
+
+      larguraAnterior =
+        larguraAtual;
+
+
+      const telaRelatorio =
+        document.getElementById(
+          'telaRelatorio'
+        );
+
+
+      if (
+        telaRelatorio &&
+        telaRelatorio.style.display === 'block'
+      ) {
+
+        renderizarRelatorio(
+          corridasExibidas
+        );
+
+      }
+
+    }
+
+  }
+);
+
+
+window.onload = function() {
+
+  atualizarDataHoraAtual();
+
+  setInterval(
+    atualizarDataHoraAtual,
+    1000
+  );
+
+
+  window.onafterprint =
+    function() {
+
+      document.body.classList.remove(
+        'imprimir-corrida'
+      );
+
+      document.body.classList.remove(
+        'imprimir-fechamento'
+      );
+
+    };
+
+
+  window.addEventListener(
+    'click',
+    function(evento) {
+
+      if (
+        !evento.target.closest(
+          '.local-linha'
+        )
+      ) {
+
+        fecharSugestoesLocais();
+
+      }
+
+    }
+  );
+
+
+  carregarCadastros();
+
+  carregarPrecos();
+
+  carregarCorridasSistema(
+    function() {
+
+      abrirDashboard();
+
+    }
+  );
+
+
+  /*
+   * Atualiza a interface periodicamente.
+   *
+   * O gatilho do Apps Script mantém os dados
+   * persistidos na planilha.
+   *
+   * Aqui apenas mantemos a tela atualizada
+   * sem precisar recarregar o navegador.
+   */
+
+  intervaloAtualizacao =
+    setInterval(
+      function() {
+
+        carregarCorridasSistema(
+          null,
+          true
+        );
+
+      },
+      60000
+    );
+
+};
+
+
+/* ============================================================
+   DATA E HORA ATUAL
+   ============================================================ */
+
+function atualizarDataHoraAtual() {
+
+  const agora =
+    new Date();
+
+
+  const dataFormatada =
+    agora.toLocaleDateString(
+      'pt-BR'
+    );
+
+
+  const horaFormatada =
+    agora.toLocaleTimeString(
+      'pt-BR',
+      {
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+      }
+    );
+
+
+  const elementoData =
+    document.getElementById(
+      'dataAtual'
+    );
+
+
+  const elementoHora =
+    document.getElementById(
+      'horaAtual'
+    );
+
+
+  if (elementoData) {
+
+    elementoData.textContent =
+      dataFormatada;
+
+  }
+
+
+  if (elementoHora) {
+
+    elementoHora.textContent =
+      horaFormatada;
+
+  }
+
+}
+
+
+/* ============================================================
+   OBTER DATA E HORA PARA REGISTRO
+   ============================================================ */
+
+function obterDataHoraAtual() {
+
+  const agora =
+    new Date();
+
+
+  const ano =
+    agora.getFullYear();
+
+
+  const mes =
+    String(
+      agora.getMonth() + 1
+    ).padStart(
+      2,
+      '0'
+    );
+
+
+  const dia =
+    String(
+      agora.getDate()
+    ).padStart(
+      2,
+      '0'
+    );
+
+
+  const horas =
+    String(
+      agora.getHours()
+    ).padStart(
+      2,
+      '0'
+    );
+
+
+  const minutos =
+    String(
+      agora.getMinutes()
+    ).padStart(
+      2,
+      '0'
+    );
+
+
+  return {
+
+    data:
+      `${ano}-${mes}-${dia}`,
+
+    horario:
+      `${horas}:${minutos}`
+
+  };
+
+}
+
+
+/* ============================================================
+   SAUDAÇÃO
+   ============================================================ */
+
+function obterSaudacao() {
+
+  const hora =
+    new Date()
+      .getHours();
+
+  if (hora < 12) {
+    return 'Bom dia';
+  }
+
+  if (hora < 18) {
+    return 'Boa tarde';
+  }
+
+  return 'Boa noite';
+
+}
+
+
+/* ============================================================
+   NORMALIZAR TEXTO
+   ============================================================ */
+
+function normalizarTexto(
+  texto
+) {
+
+  return String(
+    texto || ''
+  )
+  .trim()
+  .toLowerCase()
+  .normalize('NFD')
+  .replace(
+    /[\u0300-\u036f]/g,
+    ''
+  );
+
+}
+
+
+/* ============================================================
+   OBTEM PREÇO DO LOCAL
+   ============================================================ */
+
+function obterPrecoLocal(
+  nomeLocal
+) {
+
+  const procurado =
+    normalizarTexto(
+      nomeLocal
+    );
+
+
+  if (!procurado) {
+    return 0;
+  }
+
+
+  const chaveEncontrada =
+    Object.keys(
+      precos.corridas
+    ).find(
+      function(chave) {
+
+        return (
+          normalizarTexto(chave) ===
+          procurado
+        );
+
+      }
+    );
+
+
+  if (!chaveEncontrada) {
+    return 0;
+  }
+
+
+  return Number(
+    precos.corridas[
+      chaveEncontrada
+    ]
+  ) || 0;
+
+}
+
+
+/* ============================================================
+   COMBINAÇÃO ESPECIAL
+   ============================================================ */
+
+function obterCombinacaoEspecial(
+  locais
+) {
+
+  const locaisNormalizados =
+    locais
+      .map(
+        function(local) {
+
+          return normalizarTexto(
+            local
+          );
+
+        }
+      )
+      .filter(
+        function(local) {
+
+          return local !== '';
+
+        }
+      )
+      .sort();
+
+
+  const chaveLocais =
+    locaisNormalizados.join('|');
+
+
+  const combinacoes =
+    precos.combinacoesEspeciais ||
+    {};
+
+
+  const valoresFixos =
+    precos.valoresFixosEspeciais ||
+    {};
+
+
+  const nomesCombinacoes =
+    Object.keys(
+      combinacoes
+    );
+
+
+  for (
+    let i = 0;
+    i < nomesCombinacoes.length;
+    i++
+  ) {
+
+    const nomeCombinacao =
+      nomesCombinacoes[i];
+
+
+    const locaisCombinacao =
+      nomeCombinacao
+        .split('+')
+        .map(
+          function(local) {
+
+            return normalizarTexto(
+              local
+            );
+
+          }
+        )
+        .filter(
+          function(local) {
+
+            return local !== '';
+
+          }
+        )
+        .sort();
+
+
+    const chaveCombinacao =
+      locaisCombinacao.join('|');
+
+
+    if (
+      chaveCombinacao ===
+      chaveLocais
+    ) {
+
+      return {
+
+        valorRetorno:
+          Number(
+            combinacoes[
+              nomeCombinacao
+            ]
+          ) || 0,
+
+        valorFixo:
+          (
+            valoresFixos[
+              nomeCombinacao
+            ] !== undefined
+              ? Number(
+                  valoresFixos[
+                    nomeCombinacao
+                  ]
+                )
+              : null
+          )
+
+      };
+
+    }
+
+  }
+
+
+  return null;
+
+}
+
+
+/* ============================================================
+   CADASTROS
+   ============================================================ */
+
+function carregarCadastros() {
+
+  google.script.run
+
+    .withSuccessHandler(
+      function(resultado) {
+
+        cadastros =
+          resultado || {
+
+            motoboys: [],
+
+            solicitantes: []
+
+          };
+
+        preencherSelects();
+
+      }
+    )
+
+    .withFailureHandler(
+      function(erro) {
+
+        mostrarMensagem(
+          erro.message,
+          true
+        );
+
+      }
+    )
+
+    .obterCadastros();
+
+}
+
+
+/* ============================================================
+   PREENCHER CAMPOS DE CADASTRO
+   ============================================================ */
+
+function preencherSelects() {
+
+  const listaSolicitantes =
+    document.getElementById(
+      'listaSolicitantes'
+    );
+
+
+  const listaMotoboys =
+    document.getElementById(
+      'listaMotoboys'
+    );
+
+
+  const motoboy =
+    document.getElementById(
+      'motoboy'
+    );
+
+
+  listaSolicitantes.innerHTML =
+    '';
+
+
+  listaMotoboys.innerHTML =
+    '';
+
+
+  cadastros.solicitantes
+    .forEach(
+      function(nome) {
+
+        const option =
+          document.createElement(
+            'option'
+          );
+
+
+        option.value =
+          nome;
+
+
+        listaSolicitantes.appendChild(
+          option
+        );
+
+      }
+    );
+
+
+  cadastros.motoboys
+    .forEach(
+      function(nome) {
+
+        const option =
+          document.createElement(
+            'option'
+          );
+
+
+        option.value =
+          nome;
+
+
+        listaMotoboys.appendChild(
+          option
+        );
+
+      }
+    );
+
+
+  const ceara =
+    cadastros.motoboys.find(
+      function(nome) {
+
+        return (
+          normalizarTexto(nome) ===
+          'ceara'
+        );
+
+      }
+    );
+
+
+  if (
+    ceara &&
+    !motoboy.value
+  ) {
+
+    motoboy.value =
+      ceara;
+
+  }
+
+
+  preencherListaLocais();
+
+}
+
+
+/* ============================================================
+   LISTA DE LOCAIS
+   ============================================================ */
+
+function preencherListaLocais() {
+
+  const listaLocais =
+    document.getElementById(
+      'listaLocais'
+    );
+
+
+  if (!listaLocais) {
+    return;
+  }
+
+
+  listaLocais.innerHTML =
+    '';
+
+
+  Object.keys(
+    precos.corridas
+  )
+  .forEach(
+    function(nome) {
+
+      const option =
+        document.createElement(
+          'option'
+        );
+
+
+      option.value =
+        nome;
+
+
+      listaLocais.appendChild(
+        option
+      );
+
+    }
+  );
+
+}
+
+
+/* ============================================================
+   PREÇOS
+   ============================================================ */
+
+function carregarPrecos() {
+
+  google.script.run
+
+    .withSuccessHandler(
+      function(resultado) {
+
+        precos =
+          resultado || {
+
+            corridas: {},
+
+            valorRetorno: 0,
+
+            combinacoesEspeciais: {},
+
+            valoresFixosEspeciais: {}
+
+          };
+
+
+        preencherListaLocais();
+
+
+        if (
+          document.querySelectorAll(
+            '.local-input'
+          ).length === 0
+        ) {
+
+          adicionarLocal();
+
+        }
+
+
+        renderizarCorridasFrequentes();
+
+        calcularValor();
+
+      }
+    )
+
+    .withFailureHandler(
+      function(erro) {
+
+        mostrarMensagem(
+          erro.message,
+          true
+        );
+
+      }
+    )
+
+    .obterPrecos();
+
+}
+
+
+/* ============================================================
+   NAVEGAÇÃO INTERNA
+   ============================================================ */
+
+function ocultarTodasTelas() {
+
+  const ids = [
+
+    'telaDashboard',
+
+    'telaSolicitacao',
+
+    'telaRelatorio',
+
+    'telaFinanceiro',
+
+    'telaFechamento',
+
+    'telaDetalhes',
+
+    'telaComprovante',
+
+    'telaComprovanteFechamento'
+
+  ];
+
+
+  ids.forEach(
+    function(id) {
+
+      const elemento =
+        document.getElementById(
+          id
+        );
+
+      if (elemento) {
+
+        elemento.style.display =
+          'none';
+
+      }
+
+    }
+  );
+
+}
+
+
+function atualizarMenuAtivo(
+  idAtivo
+) {
+
+  const ids = [
+
+    'menuDashboard',
+
+    'menuNovaCorrida',
+
+    'menuRelatorio',
+
+    'menuFinanceiro',
+
+    'menuFechamento',
+
+    'mobileMenuDashboard',
+
+    'mobileMenuNovaCorrida',
+
+    'mobileMenuRelatorio',
+
+    'mobileMenuFinanceiro',
+
+    'mobileMenuFechamento'
+
+  ];
+
+
+  ids.forEach(
+    function(id) {
+
+      const elemento =
+        document.getElementById(
+          id
+        );
+
+      if (!elemento) {
+        return;
+      }
+
+      elemento.classList.toggle(
+        'ativo',
+        id === idAtivo
+      );
+
+    }
+  );
+
+}
+
+
+function alternarMenu() {
+
+  document
+    .getElementById(
+      'sidebar'
+    )
+    .classList.toggle(
+      'aberta'
+    );
+
+}
+
+
+function fecharMenu() {
+
+  document
+    .getElementById(
+      'sidebar'
+    )
+    .classList.remove(
+      'aberta'
+    );
+
+}
+
+
+/* ============================================================
+   DASHBOARD
+   ============================================================ */
+
+function abrirDashboard() {
+
+  ocultarTodasTelas();
+
+  document
+    .getElementById(
+      'telaDashboard'
+    )
+    .style.display =
+      'block';
+
+
+  atualizarMenuAtivo(
+    'menuDashboard'
+  );
+
+
+  fecharMenu();
+
+
+  document.getElementById(
+    'dashboardSaudacao'
+  ).textContent =
+    obterSaudacao();
+
+
+  carregarCorridasSistema(
+    function() {
+
+      renderizarDashboard();
+
+    }
+  );
+
+
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  });
+
+}
+
+
+/* ============================================================
+   CARREGAR CORRIDAS
+   ============================================================ */
+
+function carregarCorridasSistema(
+  callback,
+  silencioso
+) {
+
+  google.script.run
+
+    .withSuccessHandler(
+      function(corridas) {
+
+        todasCorridas =
+          Array.isArray(
+            corridas
+          )
+            ? corridas
+            : [];
+
+
+        corridasExibidas =
+          todasCorridas.slice();
+
+
+        window.corridasRelatorio =
+          corridasExibidas;
+
+
+        preencherFiltrosRelatorio();
+
+        renderizarCorridasFrequentes();
+
+
+        const telaAtual =
+          obterTelaAtual();
+
+
+        if (
+          telaAtual ===
+          'telaDashboard'
+        ) {
+
+          renderizarDashboard();
+
+        }
+
+
+        if (
+          telaAtual ===
+          'telaFinanceiro'
+        ) {
+
+          renderizarFinanceiro();
+
+        }
+
+
+        if (
+          telaAtual ===
+          'telaRelatorio'
+        ) {
+
+          renderizarRelatorio(
+            corridasExibidas
+          );
+
+        }
+
+
+        if (
+          telaAtual ===
+          'telaDetalhes' &&
+          corridaSelecionada
+        ) {
+
+          const atualizada =
+            todasCorridas.find(
+              function(corrida) {
+
+                return (
+                  String(
+                    corrida.numeroCorrida
+                  ) ===
+                  String(
+                    corridaSelecionada.numeroCorrida
+                  )
+                );
+
+              }
+            );
+
+          if (atualizada) {
+
+            corridaSelecionada =
+              atualizada;
+
+            renderizarDetalhesCorrida();
+
+          }
+
+        }
+
+
+        const indicador =
+          document.getElementById(
+            'dashboardUltimaAtualizacao'
+          );
+
+        if (indicador) {
+
+          indicador.textContent =
+            new Date()
+              .toLocaleTimeString(
+                'pt-BR',
+                {
+                  hour:
+                    '2-digit',
+
+                  minute:
+                    '2-digit'
+                }
+              );
+
+        }
+
+
+        if (
+          typeof callback ===
+          'function'
+        ) {
+
+          callback();
+
+        }
+
+      }
+    )
+
+    .withFailureHandler(
+      function(erro) {
+
+        if (
+          !silencioso
+        ) {
+
+          mostrarMensagem(
+            erro.message,
+            true
+          );
+
+        }
+
+      }
+    )
+
+    .obterCorridas();
+
+}
+
+
+function obterTelaAtual() {
+
+  const ids = [
+
+    'telaDashboard',
+
+    'telaSolicitacao',
+
+    'telaRelatorio',
+
+    'telaFinanceiro',
+
+    'telaFechamento',
+
+    'telaDetalhes'
+
+  ];
+
+
+  for (
+    let i = 0;
+    i < ids.length;
+    i++
+  ) {
+
+    const elemento =
+      document.getElementById(
+        ids[i]
+      );
+
+    if (
+      elemento &&
+      elemento.style.display ===
+      'block'
+    ) {
+
+      return ids[i];
+
+    }
+
+  }
+
+
+  return '';
+
+}
+
+
+/* ============================================================
+   RENDERIZAR DASHBOARD
+   ============================================================ */
+
+function renderizarDashboard() {
+
+  const hoje =
+    formatarInputData(
+      new Date()
+    );
+
+
+  const corridasHoje =
+    todasCorridas.filter(
+      function(corrida) {
+
+        return (
+          corrida.dataISO ===
+          hoje
+        );
+
+      }
+    );
+
+
+  const ativasHoje =
+    corridasHoje.filter(
+      function(corrida) {
+
+        return (
+          corrida.status !==
+          'Cancelada'
+        );
+
+      }
+    );
+
+
+  const solicitadas =
+    corridasHoje.filter(
+      function(corrida) {
+
+        return (
+          corrida.status ===
+          'Solicitada'
+        );
+
+      }
+    );
+
+
+  const concluidas =
+    corridasHoje.filter(
+      function(corrida) {
+
+        return (
+          corrida.status ===
+          'Concluída'
+        );
+
+      }
+    );
+
+
+  const canceladas =
+    corridasHoje.filter(
+      function(corrida) {
+
+        return (
+          corrida.status ===
+          'Cancelada'
+        );
+
+      }
+    );
+
+
+  const valorHoje =
+    ativasHoje.reduce(
+      function(total, corrida) {
+
+        return (
+          total +
+          (
+            Number(
+              corrida.valor
+            ) || 0
+          )
+        );
+
+      },
+      0
+    );
+
+
+  const valorCancelado =
+    canceladas.reduce(
+      function(total, corrida) {
+
+        return (
+          total +
+          (
+            Number(
+              corrida.valor
+            ) || 0
+          )
+        );
+
+      },
+      0
+    );
+
+
+  document.getElementById(
+    'cardsDashboard'
+  ).innerHTML = `
+
+    <div class="card-dashboard">
+
+      <div class="icone">
+        🏍️
+      </div>
+
+      <div class="label">
+        Corridas hoje
+      </div>
+
+      <div class="numero">
+        ${ativasHoje.length}
+      </div>
+
+      <div class="meta">
+        ${solicitadas.length} solicitadas
+        · ${concluidas.length} concluídas
+      </div>
+
+    </div>
+
+
+    <div class="card-dashboard">
+
+      <div class="icone">
+        💰
+      </div>
+
+      <div class="label">
+        Valor hoje
+      </div>
+
+      <div class="numero">
+        ${formatarMoeda(valorHoje)}
+      </div>
+
+      <div class="meta">
+        Canceladas: ${formatarMoeda(valorCancelado)}
+      </div>
+
+    </div>
+
+
+    <div class="card-dashboard">
+
+      <div class="icone">
+        ⏳
+      </div>
+
+      <div class="label">
+        Solicitadas
+      </div>
+
+      <div class="numero">
+        ${solicitadas.length}
+      </div>
+
+      <div class="meta">
+        Conclusão automática após 2h
+      </div>
+
+    </div>
+
+
+    <div class="card-dashboard">
+
+      <div class="icone">
+        🔴
+      </div>
+
+      <div class="label">
+        Canceladas
+      </div>
+
+      <div class="numero">
+        ${canceladas.length}
+      </div>
+
+      <div class="meta">
+        Fora dos fechamentos
+      </div>
+
+    </div>
+
+  `;
+
+
+  renderizarGraficoValores(
+    'graficoDashboardValores',
+    obterTotaisPorDia(
+      7
+    )
+  );
+
+
+  renderizarGraficoMotoboys(
+    'graficoDashboardMotoboys',
+    obterTotaisPorMotoboy(
+      corridasHoje
+    )
+  );
+
+
+  renderizarCorridasRecentes();
+
+  renderizarCorridasFrequentes();
+
+}
+
+
+/* ============================================================
+   TOTAIS POR DIA
+   ============================================================ */
+
+function obterTotaisPorDia(
+  quantidadeDias
+) {
+
+  const resultado = [];
+
+  const hoje =
+    criarDataLocal(
+      formatarInputData(
+        new Date()
+      )
+    );
+
+
+  for (
+    let i = quantidadeDias - 1;
+    i >= 0;
+    i--
+  ) {
+
+    const data =
+      new Date(
+        hoje
+      );
+
+    data.setDate(
+      data.getDate() - i
+    );
+
+
+    const iso =
+      formatarInputData(
+        data
+      );
+
+
+    const total =
+      todasCorridas
+        .filter(
+          function(corrida) {
+
+            return (
+              corrida.dataISO ===
+              iso &&
+              corrida.status !==
+              'Cancelada'
+            );
+
+          }
+        )
+        .reduce(
+          function(soma, corrida) {
+
+            return (
+              soma +
+              Number(
+                corrida.valor
+              ) || 0
+            );
+
+          },
+          0
+        );
+
+
+    resultado.push({
+
+      iso:
+        iso,
+
+      label:
+        String(
+          data.getDate()
+        ).padStart(
+          2,
+          '0'
+        ) +
+        '/' +
+        String(
+          data.getMonth() + 1
+        ).padStart(
+          2,
+          '0'
+        ),
+
+      total:
+        total
+
+    });
+
+  }
+
+
+  return resultado;
+
+}
+
+
+/* ============================================================
+   TOTAIS POR MOTOBOY
+   ============================================================ */
+
+function obterTotaisPorMotoboy(
+  corridas
+) {
+
+  const mapa = {};
+
+  corridas
+    .filter(
+      function(corrida) {
+
+        return (
+          corrida.status !==
+          'Cancelada'
+        );
+
+      }
+    )
+    .forEach(
+      function(corrida) {
+
+        const nome =
+          corrida.motoboy ||
+          'Não informado';
+
+
+        if (
+          !mapa[nome]
+        ) {
+
+          mapa[nome] =
+            0;
+
+        }
+
+
+        mapa[nome] +=
+          Number(
+            corrida.valor
+          ) || 0;
+
+      }
+    );
+
+
+  return Object.keys(
+    mapa
+  )
+  .map(
+    function(nome) {
+
+      return {
+
+        nome:
+          nome,
+
+        total:
+          mapa[nome]
+
+      };
+
+    }
+  )
+  .sort(
+    function(a, b) {
+
+      return b.total - a.total;
+
+    }
+  )
+  .slice(
+    0,
+    8
+  );
+
+}
+
+
+/* ============================================================
+   GRÁFICO DE VALORES
+   ============================================================ */
+
+function renderizarGraficoValores(
+  id,
+  dados
+) {
+
+  const area =
+    document.getElementById(
+      id
+    );
+
+
+  if (
+    !area
+  ) {
+    return;
+  }
+
+
+  if (
+    !dados ||
+    dados.length === 0
+  ) {
+
+    area.innerHTML =
+      '<div class="sem-registros">Sem dados.</div>';
+
+    return;
+
+  }
+
+
+  const maior =
+    Math.max.apply(
+      null,
+      dados.map(
+        function(item) {
+
+          return item.total;
+
+        }
+      )
+    );
+
+
+  area.innerHTML =
+    dados
+      .map(
+        function(item) {
+
+          const percentual =
+            maior > 0
+              ? (
+                  item.total /
+                  maior
+                ) * 100
+              : 0;
+
+
+          return `
+
+            <div class="barra-coluna">
+
+              <div class="barra-valor">
+
+                ${
+                  item.total > 0
+                    ? formatarMoeda(
+                        item.total
+                      )
+                    : ''
+                }
+
+              </div>
+
+              <div
+                class="barra"
+                style="height:${Math.max(
+                  percentual,
+                  item.total > 0
+                    ? 5
+                    : 2
+                )}%;">
+
+              </div>
+
+              <div class="barra-label">
+
+                ${item.label}
+
+              </div>
+
+            </div>
+
+          `;
+
+        }
+      )
+      .join('');
+
+}
+
+
+/* ============================================================
+   GRÁFICO POR MOTOBOY
+   ============================================================ */
+
+function renderizarGraficoMotoboys(
+  id,
+  dados
+) {
+
+  const area =
+    document.getElementById(
+      id
+    );
+
+
+  if (
+    !area
+  ) {
+    return;
+  }
+
+
+  if (
+    !dados ||
+    dados.length === 0
+  ) {
+
+    area.innerHTML =
+      '<div class="sem-registros">Sem corridas.</div>';
+
+    return;
+
+  }
+
+
+  const maior =
+    Math.max.apply(
+      null,
+      dados.map(
+        function(item) {
+
+          return item.total;
+
+        }
+      )
+    );
+
+
+  area.innerHTML =
+    dados
+      .map(
+        function(item) {
+
+          const percentual =
+            maior > 0
+              ? (
+                  item.total /
+                  maior
+                ) * 100
+              : 0;
+
+
+          return `
+
+            <div class="linha-grafico">
+
+              <div class="nome">
+
+                ${escapeHtml(
+                  item.nome
+                )}
+
+              </div>
+
+              <div class="trilho">
+
+                <div
+                  class="preenchimento"
+                  style="width:${percentual}%;">
+
+                </div>
+
+              </div>
+
+              <div class="valor">
+
+                ${formatarMoeda(
+                  item.total
+                )}
+
+              </div>
+
+            </div>
+
+          `;
+
+        }
+      )
+      .join('');
+
+}
+
+
+/* ============================================================
+   CORRIDAS RECENTES
+   ============================================================ */
+
+function renderizarCorridasRecentes() {
+
+  const area =
+    document.getElementById(
+      'listaCorridasRecentes'
+    );
+
+
+  if (!area) {
+    return;
+  }
+
+
+  const corridas =
+    todasCorridas
+      .slice(
+        0,
+        6
+      );
+
+
+  if (
+    corridas.length === 0
+  ) {
+
+    area.innerHTML =
+      '<div class="sem-registros">Nenhuma corrida registrada.</div>';
+
+    return;
+
+  }
+
+
+  area.innerHTML =
+    corridas
+      .map(
+        function(corrida) {
+
+          return `
+
+            <div class="item-recente">
+
+              <div class="numero">
+
+                ${escapeHtml(
+                  corrida.numeroCorrida ||
+                  '-'
+                )}
+
+              </div>
+
+
+              <div class="descricao">
+
+                <strong>
+
+                  ${escapeHtml(
+                    corrida.corrida ||
+                    '-'
+                  )}
+
+                </strong>
+
+
+                <span>
+
+                  ${escapeHtml(
+                    corrida.motoboy ||
+                    '-'
+                  )}
+                  ·
+                  ${escapeHtml(
+                    corrida.data ||
+                    '-'
+                  )}
+                  ${escapeHtml(
+                    corrida.horario ||
+                    ''
+                  )}
+
+                </span>
+
+              </div>
+
+
+              <div>
+
+                ${renderizarStatusBadge(
+                  corrida.status
+                )}
+
+              </div>
+
+            </div>
+
+          `;
+
+        }
+      )
+      .join('');
+
+}
+
+
+/* ============================================================
+   CORRIDAS FREQUENTES
+   ============================================================ */
+
+function obterCorridasFrequentes() {
+
+  const mapa = {};
+
+  todasCorridas
+    .filter(
+      function(corrida) {
+
+        return (
+          corrida.status !==
+          'Cancelada' &&
+          corrida.corrida
+        );
+
+      }
+    )
+    .forEach(
+      function(corrida) {
+
+        const chave =
+          corrida.corrida
+            .trim();
+
+
+        if (!mapa[chave]) {
+
+          mapa[chave] = {
+
+            nome:
+              chave,
+
+            quantidade:
+              0
+
+          };
+
+        }
+
+
+        mapa[chave]
+          .quantidade += 1;
+
+      }
+    );
+
+
+  return Object.keys(
+    mapa
+  )
+  .map(
+    function(chave) {
+
+      return mapa[chave];
+
+    }
+  )
+  .sort(
+    function(a, b) {
+
+      if (
+        b.quantidade !==
+        a.quantidade
+      ) {
+
+        return (
+          b.quantidade -
+          a.quantidade
+        );
+
+      }
+
+
+      return a.nome.localeCompare(
+        b.nome,
+        'pt-BR'
+      );
+
+    }
+  )
+  .slice(
+    0,
+    8
+  );
+
+}
+
+
+function renderizarCorridasFrequentes() {
+
+  const frequentes =
+    obterCorridasFrequentes();
+
+
+  const areas = [
+
+    document.getElementById(
+      'frequentesNovaCorrida'
+    ),
+
+    document.getElementById(
+      'frequentesDashboard'
+    )
+
+  ];
+
+
+  areas.forEach(
+    function(area) {
+
+      if (!area) {
+        return;
+      }
+
+
+      if (
+        frequentes.length === 0
+      ) {
+
+        area.innerHTML = `
+
+          <div
+            style="
+              color:#94a3b8;
+              font-size:11px;
+            ">
+
+            As corridas frequentes aparecerão aqui.
+
+          </div>
+
+        `;
+
+        return;
+
+      }
+
+
+      area.innerHTML =
+        frequentes
+          .slice(
+            0,
+            area.id ===
+              'frequentesDashboard'
+              ? 6
+              : 8
+          )
+          .map(
+            function(item) {
+
+              return `
+
+                <button
+                  type="button"
+                  class="botao-frequente"
+                  title="${
+                    item.quantidade
+                  } ocorrência(s)"
+                  onclick="aplicarCorridaFrequente(
+                    '${escaparAtributoJs(
+                      item.nome
+                    )}'
+                  )">
+
+                  ⭐
+                  ${escapeHtml(
+                    item.nome
+                  )}
+
+                </button>
+
+              `;
+
+            }
+          )
+          .join('');
+
+    }
+  );
+
+}
+
+
+/* ============================================================
+   APLICAR CORRIDA FREQUENTE
+   ============================================================ */
+
+function aplicarCorridaFrequente(
+  corrida
+) {
+
+  abrirSolicitacaoSemRecarregar();
+
+
+  document.getElementById(
+    'modoManual'
+  ).checked =
+    false;
+
+
+  document.getElementById(
+    'areaManual'
+  ).style.display =
+    'none';
+
+
+  document.getElementById(
+    'areaLocais'
+  ).style.display =
+    'block';
+
+
+  preencherLocaisComCorrida(
+    corrida
+  );
+
+
+  calcularValor();
+
+}
+
+
+/* ============================================================
+   PREENCHER LOCAIS COM CORRIDA
+   ============================================================ */
+
+function preencherLocaisComCorrida(
+  corrida
+) {
+
+  const partes =
+    String(
+      corrida || ''
+    )
+    .split('+')
+    .map(
+      function(parte) {
+
+        return parte.trim();
+
+      }
+    )
+    .filter(
+      function(parte) {
+
+        return parte !== '';
+
+      }
+    );
+
+
+  const container =
+    document.getElementById(
+      'locaisContainer'
+    );
+
+
+  container.innerHTML =
+    '';
+
+
+  partes
+    .slice(
+      0,
+      5
+    )
+    .forEach(
+      function(local) {
+
+        adicionarLocal(
+          local,
+          false
+        );
+
+      }
+    );
+
+
+  if (
+    partes.length === 0
+  ) {
+
+    adicionarLocal();
+
+  }
+
+
+  fecharSugestoesLocais();
+
+}
+
+
+/* ============================================================
+   ABRIR SOLICITAÇÃO SEM RECARREGAR
+   ============================================================ */
+
+function abrirSolicitacaoSemRecarregar() {
+
+  ocultarTodasTelas();
+
+  document
+    .getElementById(
+      'telaSolicitacao'
+    )
+    .style.display =
+      'block';
+
+
+  atualizarMenuAtivo(
+    'menuNovaCorrida'
+  );
+
+
+  fecharMenu();
+
+
+  renderizarCorridasFrequentes();
+
+}
+
+
+/* ============================================================
+   SUGESTÕES INTELIGENTES DE LOCAIS
+   ============================================================ */
+
+function obterSugestoesInteligentes(
+  texto
+) {
+
+  const consulta =
+    normalizarTexto(
+      texto
+    );
+
+
+  const mapa =
+    {};
+
+
+  Object.keys(
+    precos.corridas
+  )
+  .forEach(
+    function(nome) {
+
+      mapa[
+        nome
+      ] = {
+
+        nome:
+          nome,
+
+        frequencia:
+          0,
+
+        prioridade:
+          2
+
+      };
+
+    }
+  );
+
+
+  todasCorridas
+    .filter(
+      function(corrida) {
+
+        return (
+          corrida.status !==
+          'Cancelada'
+        );
+
+      }
+    )
+    .forEach(
+      function(corrida) {
+
+        if (!corrida.corrida) {
+          return;
+        }
+
+
+        const nome =
+          corrida.corrida.trim();
+
+
+        if (
+          !mapa[nome]
+        ) {
+
+          mapa[nome] = {
+
+            nome:
+              nome,
+
+            frequencia:
+              0,
+
+            prioridade:
+              1
+
+          };
+
+        }
+
+
+        mapa[nome]
+          .frequencia += 1;
+
+
+        /*
+         * Também registra individualmente
+         * os locais que aparecem nas combinações.
+         */
+
+        nome
+          .split('+')
+          .map(
+            function(local) {
+
+              return local.trim();
+
+            }
+          )
+          .filter(
+            function(local) {
+
+              return local !== '';
+
+            }
+          )
+          .forEach(
+            function(local) {
+
+              if (
+                !mapa[local]
+              ) {
+
+                mapa[local] = {
+
+                  nome:
+                    local,
+
+                  frequencia:
+                    0,
+
+                  prioridade:
+                    2
+
+                };
+
+              }
+
+
+              mapa[local]
+                .frequencia += 1;
+
+            }
+          );
+
+      }
+    );
+
+
+  return Object.keys(
+    mapa
+  )
+  .map(
+    function(chave) {
+
+      return mapa[chave];
+
+    }
+  )
+  .filter(
+    function(item) {
+
+      if (!consulta) {
+        return true;
+      }
+
+      return (
+        normalizarTexto(
+          item.nome
+        )
+        .includes(
+          consulta
+        )
+      );
+
+    }
+  )
+  .sort(
+    function(a, b) {
+
+      const aNorm =
+        normalizarTexto(
+          a.nome
+        );
+
+      const bNorm =
+        normalizarTexto(
+          b.nome
+        );
+
+
+      const aComeca =
+        consulta &&
+        aNorm.indexOf(
+          consulta
+        ) === 0;
+
+      const bComeca =
+        consulta &&
+        bNorm.indexOf(
+          consulta
+        ) === 0;
+
+
+      if (
+        aComeca !==
+        bComeca
+      ) {
+
+        return aComeca
+          ? -1
+          : 1;
+
+      }
+
+
+      if (
+        b.frequencia !==
+        a.frequencia
+      ) {
+
+        return (
+          b.frequencia -
+          a.frequencia
+        );
+
+      }
+
+
+      return a.nome.localeCompare(
+        b.nome,
+        'pt-BR'
+      );
+
+    }
+  )
+  .slice(
+    0,
+    8
+  );
+
+}
+
+
+function mostrarSugestoesLocal(
+  input
+) {
+
+  const linha =
+    input.closest(
+      '.local-linha'
+    );
+
+
+  if (!linha) {
+    return;
+  }
+
+
+  let painel =
+    linha.querySelector(
+      '.sugestoes-locais'
+    );
+
+
+  if (!painel) {
+
+    painel =
+      document.createElement(
+        'div'
+      );
+
+    painel.className =
+      'sugestoes-locais';
+
+
+    linha.appendChild(
+      painel
+    );
+
+  }
+
+
+  const sugestoes =
+    obterSugestoesInteligentes(
+      input.value
+    );
+
+
+  if (
+    sugestoes.length === 0
+  ) {
+
+    painel.innerHTML =
+      '';
+
+    painel.classList.remove(
+      'aberta'
+    );
+
+    return;
+
+  }
+
+
+  painel.innerHTML =
+    sugestoes
+      .map(
+        function(item) {
+
+          return `
+
+            <div
+              class="sugestao-local"
+              onclick="selecionarSugestaoLocal(
+                '${escaparAtributoJs(
+                  item.nome
+                )}',
+                this
+              )">
+
+              ${
+                item.nome.includes('+')
+                  ? '🔗'
+                  : '📍'
+              }
+
+              <span>
+                ${escapeHtml(
+                  item.nome
+                )}
+              </span>
+
+            </div>
+
+          `;
+
+        }
+      )
+      .join('');
+
+
+  painel.classList.add(
+    'aberta'
+  );
+
+}
+
+
+function selecionarSugestaoLocal(
+  valor,
+  elemento
+) {
+
+  if (
+    String(
+      valor
+    ).includes('+')
+  ) {
+
+    preencherLocaisComCorrida(
+      valor
+    );
+
+  }
+
+  else {
+
+    const linha =
+      elemento.closest(
+        '.local-linha'
+      );
+
+
+    const input =
+      linha.querySelector(
+        '.local-input'
+      );
+
+
+    input.value =
+      valor;
+
+
+    calcularValor();
+
+  }
+
+
+  fecharSugestoesLocais();
+
+}
+
+
+function fecharSugestoesLocais() {
+
+  document
+    .querySelectorAll(
+      '.sugestoes-locais'
+    )
+    .forEach(
+      function(painel) {
+
+        painel.classList.remove(
+          'aberta'
+        );
+
+      }
+    );
+
+}
+
+
+/* ============================================================
+   RELATÓRIO
+   ============================================================ */
+
+function abrirRelatorio() {
+
+  ocultarTodasTelas();
+
+  document
+    .getElementById(
+      'telaRelatorio'
+    )
+    .style.display =
+      'block';
+
+
+  atualizarMenuAtivo(
+    'menuRelatorio'
+  );
+
+
+  fecharMenu();
+
+
+  carregarRelatorio();
+
+}
+
+
+function carregarRelatorio() {
+
+  const area =
+    document.getElementById(
+      'areaTabelaRelatorio'
+    );
+
+
+  area.innerHTML = `
+
+    <div class="sem-registros">
+
+      Carregando corridas...
+
+    </div>
+
+  `;
+
+
+  carregarCorridasSistema(
+    function() {
+
+      aplicarFiltrosAtuaisRelatorio(
+        false
+      );
+
+    }
+  );
+
+}
+
+
+/* ============================================================
+   PREENCHER FILTROS
+   ============================================================ */
+
+function preencherFiltrosRelatorio() {
+
+  const localSelect =
+    document.getElementById(
+      'filtroLocal'
+    );
+
+
+  const solicitanteSelect =
+    document.getElementById(
+      'filtroSolicitante'
+    );
+
+
+  if (
+    !localSelect ||
+    !solicitanteSelect
+  ) {
+
+    return;
+
+  }
+
+
+  const localAtual =
+    localSelect.value;
+
+
+  const solicitanteAtual =
+    solicitanteSelect.value;
+
+
+  const statusAtual =
+    document.getElementById(
+      'filtroStatus'
+    ) ?
+      document.getElementById(
+        'filtroStatus'
+      ).value
+      :
+      '';
+
+
+  const locais =
+    new Set();
+
+  const solicitantes =
+    new Set();
+
+
+  todasCorridas.forEach(
+    function(corrida) {
+
+      if (
+        corrida.solicitante
+      ) {
+
+        solicitantes.add(
+          corrida.solicitante
+        );
+
+      }
+
+
+      if (
+        corrida.corrida
+      ) {
+
+        corrida.corrida
+          .split('+')
+          .forEach(
+            function(local) {
+
+              const nome =
+                local.trim();
+
+
+              if (nome) {
+
+                locais.add(
+                  nome
+                );
+
+              }
+
+            }
+          );
+
+      }
+
+    }
+  );
+
+
+  localSelect.innerHTML =
+    '<option value="">Todos os locais</option>';
+
+
+  Array.from(
+    locais
+  )
+  .sort(
+    function(a, b) {
+
+      return a.localeCompare(
+        b,
+        'pt-BR'
+      );
+
+    }
+  )
+  .forEach(
+    function(local) {
+
+      const option =
+        document.createElement(
+          'option'
+        );
+
+
+      option.value =
+        local;
+
+
+      option.textContent =
+        local;
+
+
+      localSelect.appendChild(
+        option
+      );
+
+    }
+  );
+
+
+  solicitanteSelect.innerHTML =
+    '<option value="">Todos os solicitantes</option>';
+
+
+  Array.from(
+    solicitantes
+  )
+  .sort(
+    function(a, b) {
+
+      return a.localeCompare(
+        b,
+        'pt-BR'
+      );
+
+    }
+  )
+  .forEach(
+    function(nome) {
+
+      const option =
+        document.createElement(
+          'option'
+        );
+
+
+      option.value =
+        nome;
+
+
+      option.textContent =
+        nome;
+
+
+      solicitanteSelect.appendChild(
+        option
+      );
+
+    }
+  );
+
+
+  localSelect.value =
+    localAtual;
+
+
+  solicitanteSelect.value =
+    solicitanteAtual;
+
+
+  if (
+    document.getElementById(
+      'filtroStatus'
+    )
+  ) {
+
+    document.getElementById(
+      'filtroStatus'
+    ).value =
+      statusAtual;
+
+  }
+
+}
+
+
+/* ============================================================
+   FILTROS
+   ============================================================ */
+
+function alternarFiltros() {
+
+  document
+    .getElementById(
+      'painelFiltros'
+    )
+    .classList.toggle(
+      'aberto'
+    );
+
+}
+
+
+function aplicarFiltros() {
+
+  aplicarFiltrosAtuaisRelatorio(
+    true
+  );
+
+}
+
+
+function aplicarFiltrosAtuaisRelatorio(
+  validarDatas
+) {
+
+  const dataInicial =
+    document.getElementById(
+      'filtroDataInicial'
+    ).value;
+
+
+  const dataFinal =
+    document.getElementById(
+      'filtroDataFinal'
+    ).value;
+
+
+  const local =
+    normalizarTexto(
+      document.getElementById(
+        'filtroLocal'
+      ).value
+    );
+
+
+  const solicitante =
+    normalizarTexto(
+      document.getElementById(
+        'filtroSolicitante'
+      ).value
+    );
+
+
+  const status =
+    document.getElementById(
+      'filtroStatus'
+    ).value;
+
+
+  if (
+    validarDatas &&
+    dataInicial &&
+    dataFinal &&
+    dataInicial > dataFinal
+  ) {
+
+    alert(
+      'A data inicial não pode ser maior que a data final.'
+    );
+
+    return;
+
+  }
+
+
+  corridasExibidas =
+    todasCorridas.filter(
+      function(corrida) {
+
+        if (
+          dataInicial &&
+          (
+            !corrida.dataISO ||
+            corrida.dataISO <
+            dataInicial
+          )
+        ) {
+
+          return false;
+
+        }
+
+
+        if (
+          dataFinal &&
+          (
+            !corrida.dataISO ||
+            corrida.dataISO >
+            dataFinal
+          )
+        ) {
+
+          return false;
+
+        }
+
+
+        if (
+          local &&
+          !normalizarTexto(
+            corrida.corrida
+          ).includes(
+            local
+          )
+        ) {
+
+          return false;
+
+        }
+
+
+        if (
+          solicitante &&
+          normalizarTexto(
+            corrida.solicitante
+          ) !==
+          solicitante
+        ) {
+
+          return false;
+
+        }
+
+
+        if (
+          status &&
+          corrida.status !==
+          status
+        ) {
+
+          return false;
+
+        }
+
+
+        return true;
+
+      }
+    );
+
+
+  window.corridasRelatorio =
+    corridasExibidas;
+
+
+  document.getElementById(
+    'resultadoFiltro'
+  ).textContent =
+    corridasExibidas.length +
+    (
+      corridasExibidas.length === 1
+        ? ' corrida encontrada'
+        : ' corridas encontradas'
+    );
+
+
+  renderizarRelatorio(
+    corridasExibidas
+  );
+
+}
+
+
+function limparFiltros() {
+
+  document.getElementById(
+    'filtroDataInicial'
+  ).value =
+    '';
+
+
+  document.getElementById(
+    'filtroDataFinal'
+  ).value =
+    '';
+
+
+  document.getElementById(
+    'filtroLocal'
+  ).value =
+    '';
+
+
+  document.getElementById(
+    'filtroSolicitante'
+  ).value =
+    '';
+
+
+  document.getElementById(
+    'filtroStatus'
+  ).value =
+    '';
+
+
+  corridasExibidas =
+    todasCorridas.slice();
+
+
+  window.corridasRelatorio =
+    corridasExibidas;
+
+
+  document.getElementById(
+    'resultadoFiltro'
+  ).textContent =
+    todasCorridas.length +
+    (
+      todasCorridas.length === 1
+        ? ' corrida encontrada'
+        : ' corridas encontradas'
+    );
+
+
+  renderizarRelatorio(
+    corridasExibidas
+  );
+
+}
+
+
+/* ============================================================
+   RENDERIZAR RELATÓRIO
+   ============================================================ */
+
+function renderizarRelatorio(
+  corridas
+) {
+
+  const area =
+    document.getElementById(
+      'areaTabelaRelatorio'
+    );
+
+
+  if (
+    window.innerWidth <= 700
+  ) {
+
+    renderizarRelatorioMobile(
+      corridas
+    );
+
+    window.corridasRelatorio =
+      corridas;
+
+    return;
+
+  }
+
+
+  if (
+    !Array.isArray(corridas) ||
+    corridas.length === 0
+  ) {
+
+    area.innerHTML = `
+
+      <div class="sem-registros">
+
+        Nenhuma corrida registrada para os filtros selecionados.
+
+      </div>
+
+    `;
+
+    return;
+
+  }
+
+
+  let html = `
+
+    <table>
+
+      <thead>
+
+        <tr>
+
+          <th>Nº CORRIDA</th>
+
+          <th>DATA</th>
+
+          <th>HORÁRIO</th>
+
+          <th>MOTOBOY</th>
+
+          <th>CORRIDA</th>
+
+          <th>SOLICITANTE</th>
+
+          <th>VALOR</th>
+
+          <th>STATUS</th>
+
+          <th>AÇÃO</th>
+
+        </tr>
+
+      </thead>
+
+      <tbody>
+
+  `;
+
+
+  corridas.forEach(
+    function(
+      corrida,
+      indice
+    ) {
+
+      html += `
+
+        <tr>
+
+          <td>
+            ${escapeHtml(
+              corrida.numeroCorrida ||
+              '-'
+            )}
+          </td>
+
+          <td>
+            ${escapeHtml(
+              corrida.data ||
+              '-'
+            )}
+          </td>
+
+          <td>
+            ${escapeHtml(
+              corrida.horario ||
+              '-'
+            )}
+          </td>
+
+          <td>
+            ${escapeHtml(
+              corrida.motoboy ||
+              '-'
+            )}
+          </td>
+
+          <td>
+            ${escapeHtml(
+              corrida.corrida ||
+              '-'
+            )}
+          </td>
+
+          <td>
+            ${escapeHtml(
+              corrida.solicitante ||
+              '-'
+            )}
+          </td>
+
+          <td>
+            ${formatarMoeda(
+              corrida.valor
+            )}
+          </td>
+
+          <td>
+            ${renderizarStatusBadge(
+              corrida.status
+            )}
+          </td>
+
+          <td>
+
+            <div class="acoes-tabela">
+
+              <button
+                class="botao-tabela botao-ver"
+                onclick="abrirDetalhesCorrida(${indice})">
+
+                🔎 Ver corrida
+
+              </button>
+
+
+              <button
+                class="botao-tabela botao-emitir"
+                onclick="emitirComprovante(${indice})">
+
+                📄 Emitir
+
+              </button>
+
+            </div>
+
+          </td>
+
+        </tr>
+
+      `;
+
+    }
+  );
+
+
+  html += `
+
+      </tbody>
+
+    </table>
+
+  `;
+
+
+  area.innerHTML =
+    html;
+
+
+  window.corridasRelatorio =
+    corridas;
+
+}
+
+
+function renderizarRelatorioMobile(
+  corridas
+) {
+
+  const area =
+    document.getElementById(
+      'areaTabelaRelatorio'
+    );
+
+
+  if (
+    !Array.isArray(corridas) ||
+    corridas.length === 0
+  ) {
+
+    area.innerHTML = `
+
+      <div class="sem-registros">
+
+        Nenhuma corrida registrada para os filtros selecionados.
+
+      </div>
+
+    `;
+
+    return;
+
+  }
+
+
+  let html = '';
+
+
+  corridas.forEach(
+    function(
+      corrida,
+      indice
+    ) {
+
+      html += `
+
+        <div class="corrida-mobile-card">
+
+          <div class="corrida-mobile-topo">
+
+            <div>
+
+              <div class="corrida-mobile-numero">
+                ${escapeHtml(
+                  corrida.numeroCorrida ||
+                  '-'
+                )}
+              </div>
+
+              <div class="corrida-mobile-data">
+
+                ${escapeHtml(
+                  corrida.data ||
+                  '-'
+                )}
+                ·
+                ${escapeHtml(
+                  corrida.horario ||
+                  '-'
+                )}
+
+              </div>
+
+            </div>
+
+            ${renderizarStatusBadge(
+              corrida.status
+            )}
+
+          </div>
+
+
+          <div class="corrida-mobile-grid">
+
+            <div class="corrida-mobile-campo">
+
+              <span class="label">
+                Motoboy
+              </span>
+
+              <span class="valor">
+                ${escapeHtml(
+                  corrida.motoboy ||
+                  '-'
+                )}
+              </span>
+
+            </div>
+
+
+            <div class="corrida-mobile-campo">
+
+              <span class="label">
+                Solicitante
+              </span>
+
+              <span class="valor">
+                ${escapeHtml(
+                  corrida.solicitante ||
+                  '-'
+                )}
+              </span>
+
+            </div>
+
+
+            <div class="corrida-mobile-campo full">
+
+              <span class="label">
+                Corrida
+              </span>
+
+              <span class="valor">
+                ${escapeHtml(
+                  corrida.corrida ||
+                  '-'
+                )}
+              </span>
+
+            </div>
+
+
+            <div class="corrida-mobile-campo">
+
+              <span class="label">
+                Valor
+              </span>
+
+              <span class="valor">
+                ${formatarMoeda(
+                  corrida.valor
+                )}
+              </span>
+
+            </div>
+
+
+            <div class="corrida-mobile-campo">
+
+              <span class="label">
+                Status
+              </span>
+
+              <span class="valor">
+                ${escapeHtml(
+                  corrida.status ||
+                  'Solicitada'
+                )}
+              </span>
+
+            </div>
+
+          </div>
+
+
+          <div class="corrida-mobile-acoes">
+
+            <button
+              class="botao-tabela botao-ver"
+              onclick="abrirDetalhesCorrida(${indice})">
+
+              🔎 Ver corrida
+
+            </button>
+
+
+            <button
+              class="botao-tabela botao-emitir"
+              onclick="emitirComprovante(${indice})">
+
+              📄 Emitir
+
+            </button>
+
+          </div>
+
+        </div>
+
+      `;
+
+    }
+  );
+
+
+  area.innerHTML =
+    html;
+
+}
+
+
+/* ============================================================
+   STATUS BADGE
+   ============================================================ */
+
+function renderizarStatusBadge(
+  status
+) {
+
+  const valor =
+    status || 'Solicitada';
+
+
+  if (
+    valor ===
+    'Concluída'
+  ) {
+
+    return `
+      <span class="status-badge status-concluida">
+        🟢 Concluída
+      </span>
+    `;
+
+  }
+
+
+  if (
+    valor ===
+    'Cancelada'
+  ) {
+
+    return `
+      <span class="status-badge status-cancelada">
+        🔴 Cancelada
+      </span>
+    `;
+
+  }
+
+
+  return `
+    <span class="status-badge status-solicitada">
+      🟡 Solicitada
+    </span>
+  `;
+
+}
+
+
+/* ============================================================
+   DETALHES
+   ============================================================ */
+
+function abrirDetalhesCorrida(
+  indice
+) {
+
+  if (
+    !window.corridasRelatorio ||
+    !window.corridasRelatorio[indice]
+  ) {
+
+    return;
+
+  }
+
+
+  corridaSelecionada =
+    window.corridasRelatorio[
+      indice
+    ];
+
+
+  renderizarDetalhesCorrida();
+
+
+  ocultarTodasTelas();
+
+
+  document
+    .getElementById(
+      'telaDetalhes'
+    )
+    .style.display =
+      'block';
+
+
+  fecharMenu();
+
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  });
+
+}
+
+
+function abrirDetalhesPorNumero(
+  numeroCorrida
+) {
+
+  const encontrada =
+    todasCorridas.find(
+      function(corrida) {
+
+        return (
+          String(
+            corrida.numeroCorrida
+          ) ===
+          String(
+            numeroCorrida
+          )
+        );
+
+      }
+    );
+
+
+  if (!encontrada) {
+    return;
+  }
+
+
+  corridaSelecionada =
+    encontrada;
+
+
+  renderizarDetalhesCorrida();
+
+
+  ocultarTodasTelas();
+
+
+  document
+    .getElementById(
+      'telaDetalhes'
+    )
+    .style.display =
+      'block';
+
+
+  fecharMenu();
+
+}
+
+
+function renderizarDetalhesCorrida() {
+
+  if (!corridaSelecionada) {
+    return;
+  }
+
+
+  const corrida =
+    corridaSelecionada;
+
+
+  document.getElementById(
+    'detalheNumero'
+  ).textContent =
+    corrida.numeroCorrida ||
+    '-';
+
+
+  const statusElemento =
+    document.getElementById(
+      'detalheStatus'
+    );
+
+
+  statusElemento.outerHTML =
+    `
+      <div
+        id="detalheStatus"
+        class="status-badge ${
+          corrida.status ===
+          'Concluída'
+            ? 'status-concluida'
+            :
+            corrida.status ===
+            'Cancelada'
+              ? 'status-cancelada'
+              : 'status-solicitada'
+        }">
+
+        ${
+          corrida.status ===
+          'Concluída'
+            ? '🟢'
+            :
+            corrida.status ===
+            'Cancelada'
+              ? '🔴'
+              : '🟡'
+        }
+
+        ${escapeHtml(
+          corrida.status ||
+          'Solicitada'
+        )}
+
+      </div>
+    `;
+
+
+  document.getElementById(
+    'detalhesInformacoes'
+  ).innerHTML = `
+
+    <div class="detalhe-card">
+
+      <div class="label">
+        Motoboy
+      </div>
+
+      <div class="valor">
+        ${escapeHtml(
+          corrida.motoboy ||
+          '-'
+        )}
+      </div>
+
+    </div>
+
+
+    <div class="detalhe-card">
+
+      <div class="label">
+        Solicitante
+      </div>
+
+      <div class="valor">
+        ${escapeHtml(
+          corrida.solicitante ||
+          '-'
+        )}
+      </div>
+
+    </div>
+
+
+    <div class="detalhe-card">
+
+      <div class="label">
+        Data
+      </div>
+
+      <div class="valor">
+        ${escapeHtml(
+          corrida.data ||
+          '-'
+        )}
+      </div>
+
+    </div>
+
+
+    <div class="detalhe-card">
+
+      <div class="label">
+        Horário
+      </div>
+
+      <div class="valor">
+        ${escapeHtml(
+          corrida.horario ||
+          '-'
+        )}
+      </div>
+
+    </div>
+
+
+    <div
+      class="detalhe-card"
+      style="grid-column:span 2;">
+
+      <div class="label">
+        Corrida / Locais
+      </div>
+
+      <div class="valor">
+        ${escapeHtml(
+          corrida.corrida ||
+          '-'
+        )}
+      </div>
+
+    </div>
+
+
+    <div class="detalhe-card">
+
+      <div class="label">
+        Valor
+      </div>
+
+      <div class="valor">
+        ${formatarMoeda(
+          corrida.valor
+        )}
+      </div>
+
+    </div>
+
+
+    <div class="detalhe-card">
+
+      <div class="label">
+        Emissão
+      </div>
+
+      <div class="valor">
+        ${escapeHtml(
+          corrida.emissao ||
+          '-'
+        )}
+      </div>
+
+    </div>
+
+
+    <div
+      class="detalhe-card"
+      style="grid-column:1 / -1;">
+
+      <div class="label">
+        Observação
+      </div>
+
+      <div class="valor">
+
+        ${escapeHtml(
+          corrida.observacao ||
+          'Nenhuma observação registrada.'
+        )}
+
+      </div>
+
+    </div>
+
+  `;
+
+
+  const mensagem =
+    document.getElementById(
+      'detalheMensagemStatus'
+    );
+
+
+  if (
+    corrida.status ===
+    'Solicitada'
+  ) {
+
+    mensagem.innerHTML = `
+
+      🕐 Esta corrida foi solicitada em
+      <strong>
+        ${escapeHtml(
+          corrida.carimbo ||
+          corrida.emissao ||
+          '-'
+        )}
+      </strong>.
+
+      A conclusão automática está prevista para
+
+      <strong>
+        ${escapeHtml(
+          corrida.conclusaoPrevista ||
+          '-'
+        )}
+      </strong>.
+
+    `;
+
+  }
+
+  else if (
+    corrida.status ===
+    'Concluída'
+  ) {
+
+    mensagem.innerHTML = `
+
+      🟢 Esta corrida foi concluída automaticamente após
+      duas horas da solicitação.
+
+      ${corrida.statusAlteradoEm
+        ? `
+          Registro de conclusão:
+          <strong>
+            ${escapeHtml(
+              corrida.statusAlteradoEm
+            )}
+          </strong>.
+        `
+        :
+        ''
+      }
+
+    `;
+
+  }
+
+  else {
+
+    mensagem.innerHTML = `
+
+      🔴 Esta corrida foi cancelada e, por isso,
+      <strong>
+        não participa dos fechamentos.
+      </strong>
+
+      ${
+        corrida.statusAlteradoEm
+          ? `
+            Cancelamento registrado em
+            <strong>
+              ${escapeHtml(
+                corrida.statusAlteradoEm
+              )}
+            </strong>.
+          `
+          :
+          ''
+      }
+
+    `;
+
+  }
+
+
+  renderizarHistoricoDetalhe(
+    corrida.historico
+  );
+
+
+  const botaoCancelar =
+    document.getElementById(
+      'botaoCancelarDetalhe'
+    );
+
+
+  if (
+    corrida.status ===
+    'Cancelada'
+  ) {
+
+    botaoCancelar.style.display =
+      'none';
+
+  }
+
+  else {
+
+    botaoCancelar.style.display =
+      'inline-block';
+
+  }
+
+}
+
+
+function renderizarHistoricoDetalhe(
+  historico
+) {
+
+  const area =
+    document.getElementById(
+      'detalheHistorico'
+    );
+
+
+  const eventos =
+    String(
+      historico || ''
+    )
+    .split('\n')
+    .map(
+      function(item) {
+
+        return item.trim();
+
+      }
+    )
+    .filter(
+      function(item) {
+
+        return item !== '';
+
+      }
+    );
+
+
+  if (
+    eventos.length === 0
+  ) {
+
+    area.innerHTML =
+      '<div class="historico-vazio">Nenhum evento registrado.</div>';
+
+    return;
+
+  }
+
+
+  area.innerHTML =
+    eventos
+      .map(
+        function(evento) {
+
+          return `
+
+            <div class="historico-item">
+
+              <div class="historico-ponto"></div>
+
+              <div class="historico-texto">
+
+                ${escapeHtml(
+                  evento
+                )}
+
+              </div>
+
+            </div>
+
+          `;
+
+        }
+      )
+      .join('');
+
+}
+
+
+function cancelarCorridaAtual() {
+
+  if (
+    !corridaSelecionada ||
+    corridaSelecionada.status ===
+    'Cancelada'
+  ) {
+
+    return;
+
+  }
+
+
+  const confirmar =
+    confirm(
+      'Tem certeza que deseja marcar esta corrida como CANCELADA? Ela deixará de participar dos fechamentos e dos valores financeiros.'
+    );
+
+
+  if (!confirmar) {
+    return;
+  }
+
+
+  google.script.run
+
+    .withSuccessHandler(
+      function(resultado) {
+
+        corridaSelecionada.status =
+          resultado.status;
+
+
+        corridaSelecionada.statusAlteradoEm =
+          resultado.alteradoEm;
+
+
+        corridaSelecionada.historico =
+          resultado.historico;
+
+
+        const indice =
+          todasCorridas.findIndex(
+            function(corrida) {
+
+              return (
+                corrida.numeroCorrida ===
+                corridaSelecionada.numeroCorrida
+              );
+
+            }
+          );
+
+
+        if (
+          indice >= 0
+        ) {
+
+          todasCorridas[indice] =
+            corridaSelecionada;
+
+        }
+
+
+        renderizarDetalhesCorrida();
+
+        renderizarDashboard();
+
+        renderizarFinanceiro();
+
+
+        mostrarMensagem(
+          '✓ Corrida marcada como cancelada.',
+          false
+        );
+
+      }
+    )
+
+    .withFailureHandler(
+      function(erro) {
+
+        mostrarMensagem(
+          erro.message,
+          true
+        );
+
+      }
+    )
+
+    .alterarStatusCorrida(
+      corridaSelecionada.linhaPlanilha,
+      'Cancelada'
+    );
+
+}
+
+
+/* ============================================================
+   EMITIR COMPROVANTE PELO DETALHE
+   ============================================================ */
+
+function emitirComprovanteDetalhe() {
+
+  if (!corridaSelecionada) {
+    return;
+  }
+
+
+  dadosUltimaCorrida =
+    corridaSelecionada;
+
+
+  preencherComprovante();
+
+
+  ocultarAcaoComprovante();
+
+
+  ocultarTodasTelas();
+
+
+  document
+    .getElementById(
+      'telaComprovante'
+    )
+    .style.display =
+      'block';
+
+
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  });
+
+}
+
+
+/* ============================================================
+   FINANCEIRO
+   ============================================================ */
+
+function abrirFinanceiro() {
+
+  ocultarTodasTelas();
+
+  document
+    .getElementById(
+      'telaFinanceiro'
+    )
+    .style.display =
+      'block';
+
+
+  atualizarMenuAtivo(
+    'menuFinanceiro'
+  );
+
+
+  fecharMenu();
+
+
+  renderizarFinanceiro();
+
+
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  });
+
+}
+
+
+function renderizarFinanceiro() {
+
+  const agora =
+    new Date();
+
+
+  const ano =
+    agora.getFullYear();
+
+
+  const mes =
+    String(
+      agora.getMonth() + 1
+    ).padStart(
+      2,
+      '0'
+    );
+
+
+  const prefixoMes =
+    ano +
+    '-' +
+    mes;
+
+
+  const corridasMes =
+    todasCorridas.filter(
+      function(corrida) {
+
+        return (
+          corrida.dataISO &&
+          corrida.dataISO
+            .indexOf(
+              prefixoMes
+            ) === 0
+        );
+
+      }
+    );
+
+
+  const ativas =
+    corridasMes.filter(
+      function(corrida) {
+
+        return (
+          corrida.status !==
+          'Cancelada'
+        );
+
+      }
+    );
+
+
+  const canceladas =
+    corridasMes.filter(
+      function(corrida) {
+
+        return (
+          corrida.status ===
+          'Cancelada'
+        );
+
+      }
+    );
+
+
+  const valorAtivo =
+    ativas.reduce(
+      function(total, corrida) {
+
+        return (
+          total +
+          Number(
+            corrida.valor
+          ) || 0
+        );
+
+      },
+      0
+    );
+
+
+  const valorCancelado =
+    canceladas.reduce(
+      function(total, corrida) {
+
+        return (
+          total +
+          Number(
+            corrida.valor
+          ) || 0
+        );
+
+      },
+      0
+    );
+
+
+  const concluidas =
+    corridasMes.filter(
+      function(corrida) {
+
+        return (
+          corrida.status ===
+          'Concluída'
+        );
+
+      }
+    ).length;
+
+
+  const solicitadas =
+    corridasMes.filter(
+      function(corrida) {
+
+        return (
+          corrida.status ===
+          'Solicitada'
+        );
+
+      }
+    ).length;
+
+
+  document.getElementById(
+    'cardsFinanceiro'
+  ).innerHTML = `
+
+    <div class="card-financeiro">
+
+      <span class="label">
+        Valor do mês
+      </span>
+
+      <div class="valor">
+        ${formatarMoeda(valorAtivo)}
+      </div>
+
+    </div>
+
+
+    <div class="card-financeiro">
+
+      <span class="label">
+        Corridas válidas
+      </span>
+
+      <div class="valor">
+        ${ativas.length}
+      </div>
+
+    </div>
+
+
+    <div class="card-financeiro">
+
+      <span class="label">
+        Corridas concluídas
+      </span>
+
+      <div class="valor">
+        ${concluidas}
+      </div>
+
+    </div>
+
+
+    <div class="card-financeiro">
+
+      <span class="label">
+        Valor cancelado
+      </span>
+
+      <div class="valor">
+        ${formatarMoeda(valorCancelado)}
+      </div>
+
+    </div>
+
+  `;
+
+
+  renderizarGraficoValores(
+    'graficoFinanceiroDias',
+    obterTotaisPorDia(
+      14
+    )
+  );
+
+
+  renderizarGraficoMotoboys(
+    'graficoFinanceiroMotoboys',
+    obterTotaisPorMotoboy(
+      corridasMes
+    )
+  );
+
+
+  const areaStatus =
+    document.getElementById(
+      'statusFinanceiro'
+    );
+
+
+  const totalStatus =
+    Math.max(
+      corridasMes.length,
+      1
+    );
+
+
+  areaStatus.innerHTML = `
+
+    <div class="status-linha">
+
+      <div class="nome">
+        Solicitadas
+      </div>
+
+      <div class="barra">
+        <span
+          class="barra-amarela"
+          style="width:${
+            (
+              solicitadas /
+              totalStatus
+            ) *
+            100
+          }%;">
+
+        </span>
+      </div>
+
+      <div class="quantidade">
+        ${solicitadas}
+      </div>
+
+    </div>
+
+
+    <div class="status-linha">
+
+      <div class="nome">
+        Concluídas
+      </div>
+
+      <div class="barra">
+        <span
+          class="barra-verde"
+          style="width:${
+            (
+              concluidas /
+              totalStatus
+            ) *
+            100
+          }%;">
+
+        </span>
+      </div>
+
+      <div class="quantidade">
+        ${concluidas}
+      </div>
+
+    </div>
+
+
+    <div class="status-linha">
+
+      <div class="nome">
+        Canceladas
+      </div>
+
+      <div class="barra">
+        <span
+          class="barra-vermelha"
+          style="width:${
+            (
+              canceladas.length /
+              totalStatus
+            ) *
+            100
+          }%;">
+
+        </span>
+      </div>
+
+      <div class="quantidade">
+        ${canceladas.length}
+      </div>
+
+    </div>
+
+  `;
+
+}
+
+
+/* ============================================================
+   FECHAMENTO
+   ============================================================ */
+
+function abrirFechamento() {
+
+  ocultarTodasTelas();
+
+  document
+    .getElementById(
+      'telaFechamento'
+    )
+    .style.display =
+      'block';
+
+
+  atualizarMenuAtivo(
+    'menuFechamento'
+  );
+
+
+  fecharMenu();
+
+
+  const dataInicial =
+    document.getElementById(
+      'dataInicialFechamento'
+    );
+
+
+  if (
+    !dataInicial.value
+  ) {
+
+    dataInicial.value =
+      formatarInputData(
+        new Date()
+      );
+
+  }
+
+
+  atualizarDataFinalFechamento();
+
+
+  carregarCorridasSistema(
+    function() {
+
+      gerarFechamento();
+
+    }
+  );
+
+
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  });
+
+}
+
+
+function atualizarDataFinalFechamento() {
+
+  const tipo =
+    document.getElementById(
+      'tipoFechamento'
+    ).value;
+
+
+  const dataInicial =
+    document.getElementById(
+      'dataInicialFechamento'
+    ).value;
+
+
+  const campoFinal =
+    document.getElementById(
+      'dataFinalFechamento'
+    );
+
+
+  if (
+    !dataInicial
+  ) {
+
+    campoFinal.value =
+      '';
+
+    return;
+
+  }
+
+
+  const data =
+    criarDataLocal(
+      dataInicial
+    );
+
+
+  if (!data) {
+
+    campoFinal.value =
+      '';
+
+    return;
+
+  }
+
+
+  let dataFinal =
+    new Date(
+      data
+    );
+
+
+  if (
+    tipo ===
+    'Semanal'
+  ) {
+
+    dataFinal.setDate(
+      dataFinal.getDate() +
+      6
+    );
+
+  }
+
+  else if (
+    tipo ===
+    'Quinzenal'
+  ) {
+
+    dataFinal.setDate(
+      dataFinal.getDate() +
+      14
+    );
+
+  }
+
+  else if (
+    tipo ===
+    'Mensal'
+  ) {
+
+    dataFinal =
+      new Date(
+        data.getFullYear(),
+        data.getMonth() + 1,
+        0
+      );
+
+  }
+
+
+  campoFinal.value =
+    formatarInputData(
+      dataFinal
+    );
+
+}
+
+
+function gerarFechamento() {
+
+  const inicio =
+    document.getElementById(
+      'dataInicialFechamento'
+    ).value;
+
+
+  const fim =
+    document.getElementById(
+      'dataFinalFechamento'
+    ).value;
+
+
+  const tipo =
+    document.getElementById(
+      'tipoFechamento'
+    ).value;
+
+
+  const area =
+    document.getElementById(
+      'resultadoFechamento'
+    );
+
+
+  if (
+    !inicio ||
+    !fim
+  ) {
+
+    area.innerHTML = `
+
+      <div class="sem-registros">
+
+        Informe a data inicial do fechamento.
+
+      </div>
+
+    `;
+
+    return;
+
+  }
+
+
+  const corridas =
+    todasCorridas
+      .filter(
+        function(corrida) {
+
+          if (
+            corrida.status ===
+            'Cancelada'
+          ) {
+
+            return false;
+
+          }
+
+
+          if (
+            !corrida.dataISO
+          ) {
+
+            return false;
+
+          }
+
+
+          return (
+            corrida.dataISO >=
+            inicio &&
+            corrida.dataISO <=
+            fim
+          );
+
+        }
+      );
+
+
+  const canceladasPeriodo =
+    todasCorridas
+      .filter(
+        function(corrida) {
+
+          return (
+            corrida.status ===
+            'Cancelada' &&
+            corrida.dataISO >=
+            inicio &&
+            corrida.dataISO <=
+            fim
+          );
+
+        }
+      );
+
+
+  let totalValor =
+    0;
+
+
+  corridas.forEach(
+    function(corrida) {
+
+      totalValor +=
+        Number(
+          corrida.valor
+        ) || 0;
+
+    }
+  );
+
+
+  const porMotoboy =
+    {};
+
+
+  corridas.forEach(
+    function(corrida) {
+
+      const nome =
+        corrida.motoboy ||
+        'Não informado';
+
+
+      if (
+        !porMotoboy[nome]
+      ) {
+
+        porMotoboy[nome] = {
+
+          corridas:
+            0,
+
+          valor:
+            0
+
+        };
+
+      }
+
+
+      porMotoboy[nome]
+        .corridas += 1;
+
+
+      porMotoboy[nome]
+        .valor +=
+          Number(
+            corrida.valor
+          ) || 0;
+
+    }
+  );
+
+
+  const motoboys =
+    Object.keys(
+      porMotoboy
+    ).sort(
+      function(a, b) {
+
+        return a.localeCompare(
+          b,
+          'pt-BR'
+        );
+
+      }
+    );
+
+
+  dadosFechamentoAtual = {
+
+    tipo:
+      tipo,
+
+    inicio:
+      inicio,
+
+    fim:
+      fim,
+
+    corridas:
+      corridas,
+
+    porMotoboy:
+      porMotoboy,
+
+    motoboys:
+      motoboys,
+
+    codigo:
+      gerarNumeroFechamento()
+
+  };
+
+
+  let html = `
+
+    <div class="periodo-fechamento">
+
+      <strong>
+        ${escapeHtml(
+          tipo
+        )}
+      </strong>
+
+      —
+      período de
+
+      <strong>
+        ${formatarDataBrasil(
+          inicio
+        )}
+      </strong>
+
+      até
+
+      <strong>
+        ${formatarDataBrasil(
+          fim
+        )}
+      </strong>
+
+      <br><br>
+
+      <strong>
+        ${corridas.length}
+      </strong>
+
+      corridas válidas no fechamento.
+
+      ${
+        canceladasPeriodo.length >
+        0
+          ? `
+            <br>
+            <span
+              style="
+                color:#991b1b;
+                font-weight:bold;
+              ">
+
+              ${canceladasPeriodo.length}
+              cancelada(s) excluída(s).
+
+            </span>
+          `
+          :
+          ''
+      }
+
+    </div>
+
+
+    <div class="resumo-fechamento">
+
+      <div class="card-resumo">
+
+        <span class="label">
+          Total de corridas
+        </span>
+
+        <span class="numero">
+          ${corridas.length}
+        </span>
+
+      </div>
+
+
+      <div class="card-resumo">
+
+        <span class="label">
+          Valor total
+        </span>
+
+        <span class="numero">
+          ${formatarMoeda(
+            totalValor
+          )}
+        </span>
+
+      </div>
+
+
+      <div class="card-resumo">
+
+        <span class="label">
+          Canceladas excluídas
+        </span>
+
+        <span
+          class="numero"
+          style="color:#dc2626;">
+
+          ${canceladasPeriodo.length}
+
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <h3 class="titulo-secao-fechamento">
+
+      Fechamento por motoboy
+
+    </h3>
+
+
+    <div class="tabela-fechamento tabela-wrapper">
+
+      <table>
+
+        <thead>
+
+          <tr>
+
+            <th>
+              MOTOBOY
+            </th>
+
+            <th>
+              CORRIDAS
+            </th>
+
+            <th>
+              VALOR TOTAL
+            </th>
+
+            <th>
+              AÇÃO
+            </th>
+
+          </tr>
+
+        </thead>
+
+        <tbody>
+
+  `;
+
+
+  if (
+    motoboys.length ===
+    0
+  ) {
+
+    html += `
+
+      <tr>
+
+        <td
+          colspan="4"
+          style="text-align:center;">
+
+          Nenhuma corrida válida no período.
+
+        </td>
+
+      </tr>
+
+    `;
+
+  }
+
+
+  motoboys.forEach(
+    function(nome, indice) {
+
+      html += `
+
+        <tr>
+
+          <td>
+            ${escapeHtml(
+              nome
+            )}
+          </td>
+
+          <td>
+            ${porMotoboy[nome].corridas}
+          </td>
+
+          <td>
+            ${formatarMoeda(
+              porMotoboy[nome].valor
+            )}
+          </td>
+
+          <td>
+
+            <button
+              class="botao-tabela botao-emitir"
+              onclick="emitirComprovanteFechamento(${indice})">
+
+              📄 Emitir recibo
+
+            </button>
+
+          </td>
+
+        </tr>
+
+      `;
+
+    }
+  );
+
+
+  html += `
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+
+    <h3 class="titulo-secao-fechamento">
+
+      Corridas do período
+
+    </h3>
+
+
+    <div class="tabela-wrapper">
+
+      <table>
+
+        <thead>
+
+          <tr>
+
+            <th>DATA</th>
+
+            <th>HORÁRIO</th>
+
+            <th>MOTOBOY</th>
+
+            <th>CORRIDA</th>
+
+            <th>SOLICITANTE</th>
+
+            <th>VALOR</th>
+
+            <th>STATUS</th>
+
+          </tr>
+
+        </thead>
+
+        <tbody>
+
+  `;
+
+
+  if (
+    corridas.length ===
+    0
+  ) {
+
+    html += `
+
+      <tr>
+
+        <td
+          colspan="7"
+          style="text-align:center;">
+
+          Nenhuma corrida registrada no período.
+
+        </td>
+
+      </tr>
+
+    `;
+
+  }
+
+
+  corridas
+    .slice()
+    .sort(
+      function(a, b) {
+
+        const dataA =
+          a.dataISO +
+          ' ' +
+          a.horario;
+
+        const dataB =
+          b.dataISO +
+          ' ' +
+          b.horario;
+
+        return dataA.localeCompare(
+          dataB
+        );
+
+      }
+    )
+    .forEach(
+      function(corrida) {
+
+        html += `
+
+          <tr>
+
+            <td>
+              ${escapeHtml(
+                corrida.data ||
+                '-'
+              )}
+            </td>
+
+            <td>
+              ${escapeHtml(
+                corrida.horario ||
+                '-'
+              )}
+            </td>
+
+            <td>
+              ${escapeHtml(
+                corrida.motoboy ||
+                '-'
+              )}
+            </td>
+
+            <td>
+              ${escapeHtml(
+                corrida.corrida ||
+                '-'
+              )}
+            </td>
+
+            <td>
+              ${escapeHtml(
+                corrida.solicitante ||
+                '-'
+              )}
+            </td>
+
+            <td>
+              ${formatarMoeda(
+                corrida.valor
+              )}
+            </td>
+
+            <td>
+              ${renderizarStatusBadge(
+                corrida.status
+              )}
+            </td>
+
+          </tr>
+
+        `;
+
+      }
+    );
+
+
+  html += `
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  `;
+
+
+  area.innerHTML =
+    html;
+
+}
+
+
+/* ============================================================
+   NÚMERO DO FECHAMENTO
+   ============================================================ */
+
+function gerarNumeroFechamento() {
+
+  const agora =
+    new Date();
+
+
+  const data =
+    agora.getFullYear() +
+    String(
+      agora.getMonth() + 1
+    ).padStart(
+      2,
+      '0'
+    ) +
+    String(
+      agora.getDate()
+    ).padStart(
+      2,
+      '0'
+    );
+
+
+  const final =
+    String(
+      agora.getTime()
+    ).slice(-5);
+
+
+  return (
+    'FEC-' +
+    data +
+    '-' +
+    final
+  );
+
+}
+
+
+/* ============================================================
+   EMITIR RECIBO DE FECHAMENTO
+   ============================================================ */
+
+function emitirComprovanteFechamento(
+  indice
+) {
+
+  if (
+    !dadosFechamentoAtual ||
+    !dadosFechamentoAtual.motoboys ||
+    !dadosFechamentoAtual.motoboys[indice]
+  ) {
+
+    return;
+
+  }
+
+
+  const prestador =
+    dadosFechamentoAtual.motoboys[
+      indice
+    ];
+
+
+  const corridasPrestador =
+    dadosFechamentoAtual.corridas
+      .filter(
+        function(corrida) {
+
+          return (
+            String(
+              corrida.motoboy
+            ) ===
+            String(
+              prestador
+            )
+          );
+
+        }
+      );
+
+
+  const valorTotal =
+    corridasPrestador.reduce(
+      function(total, corrida) {
+
+        return (
+          total +
+          (
+            Number(
+              corrida.valor
+            ) || 0
+          )
+        );
+
+      },
+      0
+    );
+
+
+  const agora =
+    new Date();
+
+
+  const emissao =
+    formatarInputData(
+      agora
+    );
+
+
+  document.getElementById(
+    'docFechamentoNumero'
+  ).textContent =
+    dadosFechamentoAtual.codigo ||
+    '-';
+
+
+  document.getElementById(
+    'docFechamentoPrestador'
+  ).textContent =
+    prestador;
+
+
+  document.getElementById(
+    'docFechamentoTipo'
+  ).textContent =
+    dadosFechamentoAtual.tipo;
+
+
+  document.getElementById(
+    'docFechamentoPeriodo'
+  ).textContent =
+    formatarDataBrasil(
+      dadosFechamentoAtual.inicio
+    ) +
+    ' até ' +
+    formatarDataBrasil(
+      dadosFechamentoAtual.fim
+    );
+
+
+  document.getElementById(
+    'docFechamentoEmissao'
+  ).textContent =
+    formatarDataBrasil(
+      emissao
+    );
+
+
+  document.getElementById(
+    'docFechamentoTotalCorridas'
+  ).textContent =
+    corridasPrestador.length;
+
+
+  document.getElementById(
+    'docFechamentoResumoPeriodo'
+  ).textContent =
+    formatarDataBrasil(
+      dadosFechamentoAtual.inicio
+    ) +
+    ' a ' +
+    formatarDataBrasil(
+      dadosFechamentoAtual.fim
+    );
+
+
+  document.getElementById(
+    'docFechamentoValor'
+  ).textContent =
+    formatarMoeda(
+      valorTotal
+    );
+
+
+  const tabela =
+    document.getElementById(
+      'tabelaReciboFechamento'
+    );
+
+
+  tabela.innerHTML =
+    '';
+
+
+  corridasPrestador
+    .slice()
+    .sort(
+      function(a, b) {
+
+        const dataA =
+          a.dataISO +
+          ' ' +
+          a.horario;
+
+        const dataB =
+          b.dataISO +
+          ' ' +
+          b.horario;
+
+        return dataA.localeCompare(
+          dataB
+        );
+
+      }
+    )
+    .forEach(
+      function(corrida) {
+
+        const tr =
+          document.createElement(
+            'tr'
+          );
+
+
+        tr.innerHTML = `
+
+          <td>
+            ${escapeHtml(
+              corrida.data ||
+              '-'
+            )}
+          </td>
+
+          <td>
+            ${escapeHtml(
+              corrida.horario ||
+              '-'
+            )}
+          </td>
+
+          <td>
+            ${escapeHtml(
+              corrida.corrida ||
+              '-'
+            )}
+          </td>
+
+          <td>
+            ${escapeHtml(
+              corrida.solicitante ||
+              '-'
+            )}
+          </td>
+
+          <td>
+            ${formatarMoeda(
+              corrida.valor
+            )}
+          </td>
+
+        `;
+
+
+        tabela.appendChild(
+          tr
+        );
+
+      }
+    );
+
+
+  ocultarTodasTelas();
+
+
+  document
+    .getElementById(
+      'telaComprovanteFechamento'
+    )
+    .style.display =
+      'block';
+
+
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  });
+
+}
+
+
+/* ============================================================
+   MODO MANUAL
+   ============================================================ */
+
+function alternarModoManual() {
+
+  const manual =
+    document.getElementById(
+      'modoManual'
+    ).checked;
+
+
+  document
+    .getElementById(
+      'areaManual'
+    ).style.display =
+      manual
+        ? 'block'
+        : 'none';
+
+
+  document
+    .getElementById(
+      'areaLocais'
+    ).style.display =
+      manual
+        ? 'none'
+        : 'block';
+
+
+  document
+    .getElementById(
+      'areaRetorno'
+    ).style.display =
+      'block';
+
+
+  calcularValor();
+
+}
+
+
+/* ============================================================
+   ADICIONAR LOCAL
+   ============================================================ */
+
+function adicionarLocal(
+  valorInicial,
+  calcularDepois
+) {
+
+  const container =
+    document.getElementById(
+      'locaisContainer'
+    );
+
+
+  const quantidade =
+    container.children.length;
+
+
+  if (
+    quantidade >= 5
+  ) {
+
+    alert(
+      'Você pode adicionar no máximo 5 locais.'
+    );
+
+    return;
+
+  }
+
+
+  const linha =
+    document.createElement(
+      'div'
+    );
+
+
+  linha.className =
+    'local-linha';
+
+
+  const input =
+    document.createElement(
+      'input'
+    );
+
+
+  input.type =
+    'text';
+
+
+  input.className =
+    'local-input';
+
+
+  input.setAttribute(
+    'list',
+    'listaLocais'
+  );
+
+
+  input.placeholder =
+    'Digite ou selecione o local';
+
+
+  input.autocomplete =
+    'off';
+
+
+  if (
+    valorInicial
+  ) {
+
+    input.value =
+      valorInicial;
+
+  }
+
+
+  input.addEventListener(
+    'input',
+    function() {
+
+      calcularValor();
+
+      mostrarSugestoesLocal(
+        input
+      );
+
+    }
+  );
+
+
+  input.addEventListener(
+    'focus',
+    function() {
+
+      mostrarSugestoesLocal(
+        input
+      );
+
+    }
+  );
+
+
+  input.addEventListener(
+    'change',
+    function() {
+
+      calcularValor();
+
+    }
+  );
+
+
+  const remover =
+    document.createElement(
+      'button'
+    );
+
+
+  remover.type =
+    'button';
+
+
+  remover.className =
+    'botao-remover';
+
+
+  remover.textContent =
+    '×';
+
+
+  remover.onclick =
+    function() {
+
+      linha.remove();
+
+      calcularValor();
+
+      fecharSugestoesLocais();
+
+    };
+
+
+  linha.appendChild(
+    input
+  );
+
+
+  linha.appendChild(
+    remover
+  );
+
+
+  container.appendChild(
+    linha
+  );
+
+
+  if (
+    calcularDepois !==
+    false
+  ) {
+
+    calcularValor();
+
+  }
+
+}
+
+
+/* ============================================================
+   CALCULAR TOTAL DOS LOCAIS
+   ============================================================ */
+
+function calcularTotalLocais(
+  locais,
+  incluirRetorno
+) {
+
+  let total =
+    0;
+
+
+  locais.forEach(
+    function(local) {
+
+      total +=
+        obterPrecoLocal(
+          local
+        );
+
+    }
+  );
+
+
+  if (
+    incluirRetorno &&
+    locais.length > 0
+  ) {
+
+    const especial =
+      obterCombinacaoEspecial(
+        locais
+      );
+
+
+    if (especial) {
+
+      if (
+        especial.valorFixo !== null &&
+        !isNaN(
+          especial.valorFixo
+        )
+      ) {
+
+        return especial.valorFixo;
+
+      }
+
+
+      total +=
+        especial.valorRetorno;
+
+
+      return total;
+
+    }
+
+
+    total +=
+      Number(
+        precos.valorRetorno
+      ) || 0;
+
+  }
+
+
+  return total;
+
+}
+
+
+/* ============================================================
+   CALCULAR VALOR
+   ============================================================ */
+
+function calcularValor() {
+
+  const manual =
+    document.getElementById(
+      'modoManual'
+    ).checked;
+
+
+  if (manual) {
+
+    const total =
+      Number(
+        document.getElementById(
+          'valorManual'
+        ).value
+      ) || 0;
+
+
+    document.getElementById(
+      'valorTotal'
+    ).textContent =
+      formatarMoeda(
+        total
+      );
+
+
+    return;
+
+  }
+
+
+  const inputs =
+    document.querySelectorAll(
+      '.local-input'
+    );
+
+
+  const locais = [];
+
+
+  inputs.forEach(
+    function(input) {
+
+      const nome =
+        input.value.trim();
+
+
+      if (nome) {
+
+        locais.push(
+          nome
+        );
+
+      }
+
+    }
+  );
+
+
+  const retorno =
+    document.getElementById(
+      'retorno'
+    ).checked;
+
+
+  const total =
+    calcularTotalLocais(
+      locais,
+      retorno
+    );
+
+
+  document.getElementById(
+    'valorTotal'
+  ).textContent =
+    formatarMoeda(
+      total
+    );
+
+}
+
+
+/* ============================================================
+   CALCULAR VALOR NUMÉRICO
+   ============================================================ */
+
+function calcularValorNumerico() {
+
+  const inputs =
+    document.querySelectorAll(
+      '.local-input'
+    );
+
+
+  const locais = [];
+
+
+  inputs.forEach(
+    function(input) {
+
+      const nome =
+        input.value.trim();
+
+
+      if (nome) {
+
+        locais.push(
+          nome
+        );
+
+      }
+
+    }
+  );
+
+
+  const retorno =
+    document.getElementById(
+      'retorno'
+    ).checked;
+
+
+  return calcularTotalLocais(
+    locais,
+    retorno
+  );
+
+}
+
+
+/* ============================================================
+   REGISTRAR
+   ============================================================ */
+
+function registrar() {
+
+  const solicitante =
+    document.getElementById(
+      'solicitante'
+    ).value.trim();
+
+
+  const motoboy =
+    document.getElementById(
+      'motoboy'
+    ).value.trim();
+
+
+  const observacao =
+    document.getElementById(
+      'observacao'
+    ).value;
+
+
+  const manual =
+    document.getElementById(
+      'modoManual'
+    ).checked;
+
+
+  const dataHora =
+    obterDataHoraAtual();
+
+
+  const data =
+    dataHora.data;
+
+
+  const horario =
+    dataHora.horario;
+
+
+  if (!solicitante) {
+
+    mostrarMensagem(
+      'Informe o solicitante.',
+      true
+    );
+
+    return;
+
+  }
+
+
+  if (!motoboy) {
+
+    mostrarMensagem(
+      'Informe o motoboy.',
+      true
+    );
+
+    return;
+
+  }
+
+
+  let corrida =
+    '';
+
+  let valor =
+    0;
+
+
+  if (
+    manual
+  ) {
+
+    corrida =
+      document.getElementById(
+        'descricaoManual'
+      ).value.trim();
+
+
+    valor =
+      Number(
+        document.getElementById(
+          'valorManual'
+        ).value
+      ) || 0;
+
+
+    if (!corrida) {
+
+      mostrarMensagem(
+        'Informe a descrição da corrida.',
+        true
+      );
+
+      return;
+
+    }
+
+
+    if (
+      valor <= 0
+    ) {
+
+      mostrarMensagem(
+        'Informe um valor válido.',
+        true
+      );
+
+      return;
+
+    }
+
+  }
+
+  else {
+
+    const inputs =
+      document.querySelectorAll(
+        '.local-input'
+      );
+
+
+    const locais =
+      [];
+
+
+    inputs.forEach(
+      function(input) {
+
+        const nome =
+          input.value.trim();
+
+
+        if (nome) {
+
+          locais.push(
+            nome
+          );
+
+        }
+
+      }
+    );
+
+
+    if (
+      locais.length ===
+      0
+    ) {
+
+      mostrarMensagem(
+        'Informe pelo menos um local.',
+        true
+      );
+
+      return;
+
+    }
+
+
+    corrida =
+      locais.join(
+        ' + '
+      );
+
+
+    valor =
+      calcularValorNumerico();
+
+  }
+
+
+  const dados = {
+
+    solicitante:
+      solicitante,
+
+    motoboy:
+      motoboy,
+
+    corrida:
+      corrida,
+
+    valor:
+      valor,
+
+    data:
+      data,
+
+    horario:
+      horario,
+
+    observacao:
+      observacao
+
+  };
+
+
+  const botao =
+    document.getElementById(
+      'botaoRegistrar'
+    );
+
+
+  botao.disabled =
+    true;
+
+
+  botao.classList.add(
+    'carregando'
+  );
+
+
+  botao.textContent =
+    'REGISTRANDO...';
+
+
+  google.script.run
+
+    .withSuccessHandler(
+      function(resultado) {
+
+        botao.disabled =
+          false;
+
+
+        botao.classList.remove(
+          'carregando'
+        );
+
+
+        botao.textContent =
+          'REGISTRAR CORRIDA';
+
+
+        dadosUltimaCorrida = {
+
+          linhaPlanilha:
+            null,
+
+          numeroCorrida:
+            resultado.numeroCorrida,
+
+          solicitante:
+            dados.solicitante,
+
+          motoboy:
+            dados.motoboy,
+
+          corrida:
+            dados.corrida,
+
+          valor:
+            dados.valor,
+
+          data:
+            formatarDataBrasil(
+              dados.data
+            ),
+
+          dataISO:
+            dados.data,
+
+          horario:
+            dados.horario,
+
+          emissao:
+            formatarDataHoraAtualLocal(),
+
+          carimbo:
+            formatarDataHoraAtualLocal(),
+
+          status:
+            resultado.status ||
+            'Solicitada',
+
+          statusAlteradoEm:
+            formatarDataHoraAtualLocal(),
+
+          conclusaoPrevista:
+            calcularConclusaoPrevistaLocal(),
+
+          historico:
+            formatarDataHoraAtualLocal() +
+            ' — Corrida solicitada',
+
+          observacao:
+            dados.observacao
+
+        };
+
+
+        mostrarMensagem(
+
+          '✓ Corrida registrada com sucesso! Nº ' +
+          resultado.numeroCorrida,
+
+          false
+
+        );
+
+
+        mostrarAcaoComprovante();
+
+
+        limparFormulario();
+
+
+        carregarCorridasSistema(
+          function() {
+
+            renderizarDashboard();
+
+          },
+          true
+        );
+
+      }
+    )
+
+    .withFailureHandler(
+      function(erro) {
+
+        botao.disabled =
+          false;
+
+
+        botao.classList.remove(
+          'carregando'
+        );
+
+
+        botao.textContent =
+          'REGISTRAR CORRIDA';
+
+
+        mostrarMensagem(
+          erro.message,
+          true
+        );
+
+      }
+    )
+
+    .registrarCorrida(
+      dados
+    );
+
+}
+
+
+/* ============================================================
+   CONCLUSÃO PREVISTA LOCAL
+   ============================================================ */
+
+function calcularConclusaoPrevistaLocal() {
+
+  const data =
+    new Date();
+
+  data.setHours(
+    data.getHours() + 2
+  );
+
+
+  return (
+    data.toLocaleDateString(
+      'pt-BR'
+    ) +
+    ' ' +
+    data.toLocaleTimeString(
+      'pt-BR',
+      {
+        hour:
+          '2-digit',
+
+        minute:
+          '2-digit'
+      }
+    )
+  );
+
+}
+
+
+/* ============================================================
+   MENSAGEM
+   ============================================================ */
+
+function mostrarMensagem(
+  texto,
+  erro
+) {
+
+  const mensagem =
+    document.getElementById(
+      'mensagem'
+    );
+
+
+  if (
+    !mensagem
+  ) {
+
+    if (erro) {
+      alert(texto);
+    }
+
+    return;
+
+  }
+
+
+  if (
+    timerMensagemSucesso
+  ) {
+
+    clearTimeout(
+      timerMensagemSucesso
+    );
+
+    timerMensagemSucesso =
+      null;
+
+  }
+
+
+  if (
+    timerFadeMensagem
+  ) {
+
+    clearTimeout(
+      timerFadeMensagem
+    );
+
+    timerFadeMensagem =
+      null;
+
+  }
+
+
+  mensagem.classList.remove(
+    'sumindo'
+  );
+
+
+  mensagem.textContent =
+    texto;
+
+
+  mensagem.className =
+    'mensagem ' +
+    (
+      erro
+        ? 'erro'
+        : 'sucesso'
+    );
+
+
+  if (!erro) {
+
+    timerMensagemSucesso =
+      setTimeout(
+        function() {
+
+          mensagem.classList.add(
+            'sumindo'
+          );
+
+
+          timerMensagemSucesso =
+            null;
+
+
+          timerFadeMensagem =
+            setTimeout(
+              function() {
+
+                mensagem.textContent =
+                  '';
+
+
+                mensagem.className =
+                  'mensagem';
+
+
+                timerFadeMensagem =
+                  null;
+
+              },
+              500
+            );
+
+        },
+        4500
+      );
+
+  }
+
+}
+
+
+/* ============================================================
+   AÇÕES APÓS REGISTRO
+   ============================================================ */
+
+function mostrarAcaoComprovante() {
+
+  const area =
+    document.getElementById(
+      'acaoComprovante'
+    );
+
+
+  if (area) {
+
+    area.style.display =
+      'flex';
+
+  }
+
+}
+
+
+function ocultarAcaoComprovante() {
+
+  const area =
+    document.getElementById(
+      'acaoComprovante'
+    );
+
+
+  if (area) {
+
+    area.style.display =
+      'none';
+
+  }
+
+}
+
+
+/* ============================================================
+   COMPROVANTE RECÉM-GERADO
+   ============================================================ */
+
+function emitirComprovanteRecemGerado() {
+
+  if (
+    !dadosUltimaCorrida
+  ) {
+
+    return;
+
+  }
+
+
+  ocultarAcaoComprovante();
+
+
+  preencherComprovante();
+
+
+  ocultarTodasTelas();
+
+
+  document
+    .getElementById(
+      'telaComprovante'
+    )
+    .style.display =
+      'block';
+
+
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  });
+
+}
+
+
+/* ============================================================
+   EMITIR COMPROVANTE DO RELATÓRIO
+   ============================================================ */
+
+function emitirComprovante(
+  indice
+) {
+
+  if (
+    !window.corridasRelatorio ||
+    !window.corridasRelatorio[indice]
+  ) {
+
+    return;
+
+  }
+
+
+  dadosUltimaCorrida =
+    window.corridasRelatorio[
+      indice
+    ];
+
+
+  preencherComprovante();
+
+
+  ocultarAcaoComprovante();
+
+
+  ocultarTodasTelas();
+
+
+  document
+    .getElementById(
+      'telaComprovante'
+    )
+    .style.display =
+      'block';
+
+
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  });
+
+}
+
+
+/* ============================================================
+   PREENCHER COMPROVANTE
+   ============================================================ */
+
+function preencherComprovante() {
+
+  const dados =
+    dadosUltimaCorrida;
+
+
+  if (
+    !dados
+  ) {
+    return;
+  }
+
+
+  document.getElementById(
+    'docNumero'
+  ).textContent =
+    dados.numeroCorrida ||
+    '-';
+
+
+  document.getElementById(
+    'docSolicitante'
+  ).textContent =
+    dados.solicitante ||
+    '-';
+
+
+  document.getElementById(
+    'docMotoboy'
+  ).textContent =
+    dados.motoboy ||
+    '-';
+
+
+  document.getElementById(
+    'docStatus'
+  ).textContent =
+    dados.status ||
+    'Solicitada';
+
+
+  document.getElementById(
+    'docData'
+  ).textContent =
+    dados.data ||
+    '-';
+
+
+  document.getElementById(
+    'docHorario'
+  ).textContent =
+    dados.horario ||
+    '-';
+
+
+  document.getElementById(
+    'docCorrida'
+  ).textContent =
+    dados.corrida ||
+    '-';
+
+
+  document.getElementById(
+    'docValor'
+  ).textContent =
+    formatarMoeda(
+      dados.valor
+    );
+
+
+  document.getElementById(
+    'docEmissao'
+  ).textContent =
+    dados.emissao ||
+    '-';
+
+
+  document.getElementById(
+    'docObservacao'
+  ).textContent =
+    dados.observacao
+      ? dados.observacao
+      : 'Nenhuma observação registrada.';
+
+}
+
+
+/* ============================================================
+   IMPRIMIR
+   ============================================================ */
+
+function imprimirComprovanteCorrida() {
+
+  document.body.classList.remove(
+    'imprimir-fechamento'
+  );
+
+
+  document.body.classList.add(
+    'imprimir-corrida'
+  );
+
+
+  window.print();
+
+}
+
+
+function imprimirComprovanteFechamento() {
+
+  document.body.classList.remove(
+    'imprimir-corrida'
+  );
+
+
+  document.body.classList.add(
+    'imprimir-fechamento'
+  );
+
+
+  window.print();
+
+}
+
+
+/* ============================================================
+   VOLTAR AO RELATÓRIO
+   ============================================================ */
+
+function voltarParaRelatorio() {
+
+  ocultarTodasTelas();
+
+
+  document
+    .getElementById(
+      'telaRelatorio'
+    )
+    .style.display =
+      'block';
+
+
+  atualizarMenuAtivo(
+    'menuRelatorio'
+  );
+
+
+  ocultarAcaoComprovante();
+
+
+  carregarRelatorio();
+
+
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  });
+
+}
+
+
+/* ============================================================
+   VOLTAR AO FECHAMENTO
+   ============================================================ */
+
+function voltarParaFechamento() {
+
+  ocultarTodasTelas();
+
+
+  document
+    .getElementById(
+      'telaFechamento'
+    )
+    .style.display =
+      'block';
+
+
+  atualizarMenuAtivo(
+    'menuFechamento'
+  );
+
+
+  fecharMenu();
+
+
+  gerarFechamento();
+
+
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  });
+
+}
+
+
+/* ============================================================
+   ABRIR NOVA CORRIDA
+   ============================================================ */
+
+function abrirSolicitacao() {
+
+  abrirSolicitacaoSemRecarregar();
+
+  atualizarDataHoraAtual();
+
+}
+
+
+/* ============================================================
+   LIMPAR FORMULÁRIO
+   ============================================================ */
+
+function limparFormulario() {
+
+  document.getElementById(
+    'solicitante'
+  ).value =
+    '';
+
+
+  const motoboy =
+    document.getElementById(
+      'motoboy'
+    );
+
+
+  const ceara =
+    cadastros.motoboys.find(
+      function(nome) {
+
+        return (
+          normalizarTexto(nome) ===
+          'ceara'
+        );
+
+      }
+    );
+
+
+  if (
+    ceara
+  ) {
+
+    motoboy.value =
+      ceara;
+
+  }
+
+  else {
+
+    motoboy.value =
+      '';
+
+  }
+
+
+  document.getElementById(
+    'observacao'
+  ).value =
+    '';
+
+
+  document.getElementById(
+    'retorno'
+  ).checked =
+    false;
+
+
+  document.getElementById(
+    'modoManual'
+  ).checked =
+    false;
+
+
+  document.getElementById(
+    'areaManual'
+  ).style.display =
+    'none';
+
+
+  document.getElementById(
+    'areaLocais'
+  ).style.display =
+    'block';
+
+
+  document.getElementById(
+    'descricaoManual'
+  ).value =
+    '';
+
+
+  document.getElementById(
+    'valorManual'
+  ).value =
+    '';
+
+
+  document.getElementById(
+    'locaisContainer'
+  ).innerHTML =
+    '';
+
+
+  adicionarLocal();
+
+
+  atualizarDataHoraAtual();
+
+
+  renderizarCorridasFrequentes();
+
+
+  calcularValor();
+
+}
+
+
+/* ============================================================
+   FORMATAR DATA/HORA ATUAL
+   ============================================================ */
+
+function formatarDataHoraAtualLocal() {
+
+  const agora =
+    new Date();
+
+
+  const data =
+    agora.toLocaleDateString(
+      'pt-BR'
+    );
+
+
+  const hora =
+    agora.toLocaleTimeString(
+      'pt-BR',
+      {
+        hour:
+          '2-digit',
+
+        minute:
+          '2-digit'
+      }
+    );
+
+
+  return (
+    data +
+    ' ' +
+    hora
+  );
+
+}
+
+
+/* ============================================================
+   FORMATAR DATA PARA INPUT
+   ============================================================ */
+
+function formatarInputData(
+  data
+) {
+
+  const ano =
+    data.getFullYear();
+
+
+  const mes =
+    String(
+      data.getMonth() + 1
+    ).padStart(
+      2,
+      '0'
+    );
+
+
+  const dia =
+    String(
+      data.getDate()
+    ).padStart(
+      2,
+      '0'
+    );
+
+
+  return (
+    ano +
+    '-' +
+    mes +
+    '-' +
+    dia
+  );
+
+}
+
+
+/* ============================================================
+   CRIAR DATA LOCAL
+   ============================================================ */
+
+function criarDataLocal(
+  valor
+) {
+
+  if (!valor) {
+    return null;
+  }
+
+
+  const partes =
+    valor.split('-');
+
+
+  if (
+    partes.length !==
+    3
+  ) {
+
+    return null;
+
+  }
+
+
+  return new Date(
+    Number(
+      partes[0]
+    ),
+    Number(
+      partes[1]
+    ) - 1,
+    Number(
+      partes[2]
+    )
+  );
+
+}
+
+
+/* ============================================================
+   FORMATAR DATA BRASILEIRA
+   ============================================================ */
+
+function formatarDataBrasil(
+  valor
+) {
+
+  if (!valor) {
+    return '-';
+  }
+
+
+  const partes =
+    valor.split('-');
+
+
+  if (
+    partes.length !==
+    3
+  ) {
+
+    return valor;
+
+  }
+
+
+  return (
+    partes[2] +
+    '/' +
+    partes[1] +
+    '/' +
+    partes[0]
+  );
+
+}
+
+
+/* ============================================================
+   FORMATAR MOEDA
+   ============================================================ */
+
+function formatarMoeda(
+  valor
+) {
+
+  return Number(
+    valor || 0
+  ).toLocaleString(
+    'pt-BR',
+    {
+      style:
+        'currency',
+
+      currency:
+        'BRL'
+    }
+  );
+
+}
+
+
+/* ============================================================
+   ESCAPAR HTML
+   ============================================================ */
+
+function escapeHtml(
+  texto
+) {
+
+  return String(
+    texto ?? ''
+  )
+  .replace(
+    /&/g,
+    '&amp;'
+  )
+  .replace(
+    /</g,
+    '&lt;'
+  )
+  .replace(
+    />/g,
+    '&gt;'
+  )
+  .replace(
+    /"/g,
+    '&quot;'
+  )
+  .replace(
+    /'/g,
+    '&#039;'
+  );
+
+}
+
+
+/* ============================================================
+   ESCAPAR TEXTO PARA JAVASCRIPT INLINE
+   ============================================================ */
+
+function escaparAtributoJs(
+  texto
+) {
+
+  return String(
+    texto || ''
+  )
+  .replace(
+    /\\/g,
+    '\\\\'
+  )
+  .replace(
+    /'/g,
+    "\\'"
+  )
+  .replace(
+    /\r?\n/g,
+    '\\n'
+  );
+
+}
+
+</script>
+
+</body>
+
+</html>
